@@ -1,1 +1,3 @@
-export class Tag {}
+export class Tag {
+  tagName: string;
+}

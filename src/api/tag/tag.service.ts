@@ -8,7 +8,8 @@ export class TagService {
     return 'This action adds a new tag';
   }
 
-  getTagList() {
+  getTagList(query: any) {
+    console.log(query);
     return `This action returns all tag`;
   }
 

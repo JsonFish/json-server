@@ -3,11 +3,10 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
-  Request,
   Query,
+  Put,
 } from '@nestjs/common';
 import { TagService } from './tag.service';
 import { CreateTagDto } from './dto/create-tag.dto';
@@ -18,9 +17,9 @@ export class TagController {
   constructor(private readonly tagService: TagService) {}
 
   @Get()
-  findAll(@Query() query: any) {
+  findAll(@Query() query: Record<string, any>) {
     console.log(query);
-    return this.tagService.getTagList();
+    return this.tagService.getTagList(query);
   }
 
   @Post()
@@ -28,13 +27,8 @@ export class TagController {
     return this.tagService.create(createTagDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tagService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTagDto: UpdateTagDto) {
+  @Put()
+  update(@Body('id') id: string, @Body() updateTagDto: UpdateTagDto) {
     return this.tagService.update(+id, updateTagDto);
   }
 
