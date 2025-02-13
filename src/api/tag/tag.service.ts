@@ -1,27 +1,29 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTagDto } from './dto/create-tag.dto';
-import { UpdateTagDto } from './dto/update-tag.dto';
-
+import { InjectRepository } from '@nestjs/typeorm';
+import { Tag } from './entities/tag.entity';
+import { Repository } from 'typeorm';
+import { QueryTagDto } from './dto/tag.dto';
 @Injectable()
 export class TagService {
-  create(createTagDto: CreateTagDto) {
-    return 'This action adds a new tag';
-  }
+  constructor(
+    @InjectRepository(Tag)
+    private readonly tagRepository: Repository<Tag>,
+  ) {}
 
-  getTagList(query: any) {
-    console.log(query);
-    return `This action returns all tag`;
-  }
+  async getTagList({ currentPage, pageSize, tagName }: QueryTagDto) {
+    const queryBuilder = this.tagRepository.createQueryBuilder('tag');
 
-  findOne(id: number) {
-    return `This action returns a #${id} tag`;
-  }
+    if (tagName) {
+      queryBuilder.where('tagName LIKE :tagName', { tagName: `%${tagName}%` });
+    }
 
-  update(id: number, updateTagDto: UpdateTagDto) {
-    return `This action updates a #${id} tag`;
-  }
+    queryBuilder.skip((currentPage - 1) * pageSize).take(pageSize);
 
-  remove(id: number) {
-    return `This action removes a #${id} tag`;
+    const [data, total] = await queryBuilder.getManyAndCount();
+
+    return {
+      data,
+      total,
+    };
   }
 }

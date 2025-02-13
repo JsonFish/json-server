@@ -15,7 +15,7 @@ export class UserService {
     return this.usersRepository.findOneBy({ username });
   }
 
-  create(createUserDto: CreateUserDto) {
+  updateUserInfo(createUserDto: CreateUserDto) {
     console.log(createUserDto);
 
     return 'This action adds a new user';
