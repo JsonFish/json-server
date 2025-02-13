@@ -1,13 +1,21 @@
-import { IsString, IsInt, Min, IsOptional, MaxLength } from 'class-validator';
+import {
+  IsString,
+  IsInt,
+  Min,
+  IsOptional,
+  MaxLength,
+  IsNotEmpty,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
-class TagNameFto {
+export class TagNameDto {
   @IsString({ message: '标签名必须为字符串' })
+  @IsNotEmpty({ message: '标签名不能为空' })
   @MaxLength(20, { message: '标签名最大长度为20' })
   tagName: string;
 }
 
-export class QueryTagDto extends TagNameFto {
+export class QueryTagDto extends TagNameDto {
   @IsOptional() // 可选参数
   tagName: string;
 

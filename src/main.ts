@@ -19,6 +19,7 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true, // 启用自动类型转换
       whitelist: true, // 过滤掉未定义的属性
+      stopAtFirstError: true, // 在第一个错误时停止验证
     }),
   );
 
