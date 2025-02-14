@@ -14,7 +14,7 @@ export class TagService {
 
   async getTagList({ currentPage, pageSize, tagName }: QueryTagDto) {
     const queryBuilder = this.tagRepository.createQueryBuilder('tag');
-
+    
     if (tagName)
       queryBuilder.where('tagName LIKE :tagName', { tagName: `%${tagName}%` });
 
