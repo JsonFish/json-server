@@ -33,3 +33,15 @@ export class QueryTagDto {
   @IsInt({ message: 'pageSize 必须是整数' })
   pageSize: number = 10;
 }
+
+export class UpdateTagDto extends CreateTagDto {
+  @IsInt()
+  @IsNotEmpty({ message: 'id不能为空' })
+  id: number;
+}
+
+export class DeleteTagsDto {
+  @IsInt({ each: true, message: '标签ID必须是数字' })
+  @IsNotEmpty({ message: 'ids不能为空' })
+  id: number[];
+}

@@ -21,12 +21,17 @@ export class HttpExceptionFilter implements ExceptionFilter {
     let message = exception.message;
     let errors = null;
 
-    if (exception instanceof BadRequestException && exceptionResponse instanceof Object) {
+    if (
+      exception instanceof BadRequestException &&
+      exceptionResponse instanceof Object
+    ) {
       const responseObject = exceptionResponse as any;
       if (responseObject.message && Array.isArray(responseObject.message)) {
         errors = responseObject.message.map((error: ValidationError) => ({
           field: error.property,
-          errors: error.constraints ? Object.values(error.constraints) : ['未知错误'],
+          errors: error.constraints
+            ? Object.values(error.constraints)
+            : ['未知错误'],
         }));
         message = 'Validation failed';
       }
