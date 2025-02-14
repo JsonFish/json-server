@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from './entities/tag.entity';
 import { Repository } from 'typeorm';
-import { QueryTagDto, TagNameDto } from './dto/tag.dto';
+import { QueryTagDto, CreateTagDto } from './dto/tag.dto';
 import { ResponseDto } from '@/common/response.dto';
 
 @Injectable()
@@ -24,7 +24,7 @@ export class TagService {
     return ResponseDto.success({ tagList, total });
   }
 
-  async addTag({ tagName }: TagNameDto) {
+  async addTag({ tagName }: CreateTagDto) {
     // 检查标签是否已存在;
     const existTag = await this.tagRepository.findOne({ where: { tagName } });
     if (existTag) {
