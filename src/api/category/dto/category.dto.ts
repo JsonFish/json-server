@@ -8,12 +8,6 @@ import {
   IsArray,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-export class TagNameDto {
-  @IsNotEmpty()
-  @IsString()
-  @MaxLength(10)
-  tagName: string;
-}
 
 export class PaginationDto {
   @IsOptional()
@@ -28,23 +22,31 @@ export class PaginationDto {
   @Min(5)
   pageSize: number = 10;
 }
+export class CategoryNameDto {
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(10)
+  categoryName: string;
+}
 
-export class CreateTagDto extends TagNameDto {}
+export class CreateCategoryDto extends CategoryNameDto {}
 
-export class QueryTagDto extends PaginationDto {
+export class QueryCategoryDto extends PaginationDto {
   @IsOptional()
   @IsString()
   @MaxLength(10)
-  tagName: string;
+  categoryName?: string;
 }
 
-export class UpdateTagDto extends TagNameDto {
+// 更新分类 DTO
+export class UpdateCategoryDto extends CategoryNameDto {
   @IsNotEmpty()
   @IsInt()
   id: number;
 }
 
-export class DeleteTagsDto {
+// 删除分类 DTO
+export class DeleteCategoriesDto {
   @IsNotEmpty()
   @IsArray()
   @IsInt({ each: true })
