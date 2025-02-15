@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from './entities/tag.entity';
 import { Repository } from 'typeorm';
 import { QueryTagDto, CreateTagDto, UpdateTagDto } from './dto/tag.dto';
-import { ResponseDto } from '@/common/response.dto';
+import { Response } from '@/common/response';
 import { In } from 'typeorm';
 @Injectable()
 export class TagService {
@@ -21,26 +21,26 @@ export class TagService {
     queryBuilder.skip((currentPage - 1) * pageSize).take(pageSize);
     const [tagList, total] = await queryBuilder.getManyAndCount();
 
-    return ResponseDto.success({ tagList, total });
+    return Response.success({ tagList, total });
   }
 
   async addTag({ tagName }: CreateTagDto) {
     // 检查标签是否已存在;
     const existTag = await this.tagRepository.findOne({ where: { tagName } });
     if (existTag) {
-      return ResponseDto.error('标签已存在');
+      return Response.error('标签已存在');
     }
     // 创建新标签
     const newTag = this.tagRepository.create({ tagName });
     await this.tagRepository.save(newTag);
-    return ResponseDto.success(null, '创建成功');
+    return Response.success();
   }
 
   async updateTag({ id, tagName }: UpdateTagDto) {
     // 检查标签是否存在
     const existTag = await this.tagRepository.findOne({ where: { id } });
     if (!existTag) {
-      return ResponseDto.error('标签不存在');
+      return Response.error('标签不存在');
     }
 
     // 检查新标签名是否与其他标签重复
@@ -48,23 +48,23 @@ export class TagService {
       where: { tagName, id },
     });
     if (duplicateTag) {
-      return ResponseDto.error('标签名已存在');
+      return Response.error('标签名已存在');
     }
 
     // 更新标签
     existTag.tagName = tagName;
     await this.tagRepository.save(existTag);
-    return ResponseDto.success(null, '更新成功');
+    return Response.success();
   }
 
   async deleteTags(id: number[]) {
     // 检查所有标签是否存在
     const existTags = await this.tagRepository.findBy({ id: In(id) });
     if (existTags.length !== id.length) {
-      return ResponseDto.error('部分标签不存在');
+      return Response.error('部分标签不存在');
     }
 
     await this.tagRepository.delete(id);
-    return ResponseDto.success(null, '删除成功');
+    return Response.success();
   }
 }
