@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import * as session from 'express-session';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from '@/core/exceptions/http-exception.filter';
+import { DocumentBuilder,SwaggerModule } from '@nestjs/swagger';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(
@@ -14,7 +16,7 @@ async function bootstrap() {
     }),
   );
 
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new HttpExceptionFilter()); // 全局异常过滤器
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -23,6 +25,15 @@ async function bootstrap() {
       stopAtFirstError: true, // 在第一个错误时停止验证
     }),
   );
+
+  const config = new DocumentBuilder()
+    .setTitle('接口文档')
+    .setDescription('Json 博客接口文档')
+    .setVersion('1.0')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api-docs', app, document);
 
   await app.listen(process.env.PORT ?? 3000);
 }
