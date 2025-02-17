@@ -57,7 +57,7 @@ export class TagService {
     return Response.success();
   }
 
-  async deleteTags(id: number[]) {
+  async deleteTag(id: number[]) {
     // 检查所有标签是否存在
     const existTags = await this.tagRepository.findBy({ id: In(id) });
     if (existTags.length !== id.length) {

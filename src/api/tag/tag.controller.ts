@@ -35,7 +35,7 @@ export class TagController {
   }
 
   @Delete()
-  delete(@Body() body: DeleteTagsDto) {
-    return this.tagService.deleteTags(body.id);
+  remove(@Body() body: DeleteTagsDto) {
+    return this.tagService.deleteTag(body.id);
   }
 }
