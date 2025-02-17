@@ -43,7 +43,7 @@ export class CategoryService {
     // 创建新分类
     const newCategory = this.categoryRepository.create({ categoryName });
     await this.categoryRepository.save(newCategory);
-    return Response.success(null, '创建成功');
+    return Response.success();
   }
 
   async updateCategory({ id, categoryName }: UpdateCategoryDto) {
@@ -66,7 +66,7 @@ export class CategoryService {
     // 更新分类
     existCategory.categoryName = categoryName;
     await this.categoryRepository.save(existCategory);
-    return Response.success(null, '更新成功');
+    return Response.success();
   }
 
   async deleteCategories(ids: number[]) {
@@ -79,6 +79,6 @@ export class CategoryService {
     }
 
     await this.categoryRepository.delete(ids);
-    return Response.success(null, '删除成功');
+    return Response.success();
   }
 }
