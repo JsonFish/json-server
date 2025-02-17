@@ -4,36 +4,42 @@ import {
   Catch,
   ArgumentsHost,
   HttpException,
+  HttpStatus,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
-
+import { HttpAdapterHost } from '@nestjs/core';
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
+  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+
   catch(exception: HttpException, host: ArgumentsHost) {
+    const errorMessage = exception.message;
+    const errorStackTrace = exception.stack ? exception.stack.split('\n') : [];
+
+    const { httpAdapter } = this.httpAdapterHost;
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
-    const status = exception.getStatus();
-    const exceptionResponse: any = exception.getResponse();
+    const request = ctx.getRequest();
+    const response = ctx.getResponse();
 
-    const message = Array.isArray(exceptionResponse.message)
-      ? exceptionResponse.message.join(', ')
-      : exceptionResponse.message;
+    // 获取 HTTP 状态码，若无法获取则默认设置为 INTERNAL_SERVER_ERROR
+    const httpStatus =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const requestDetails = {
-      query: request.query,
-      body: request.body,
-      params: request.params,
-      method: request.method,
-      url: request.url,
-      timestamp: new Date().toString(),
-      ip: request.ip,
+    const responseBody = {
+      code: httpStatus,
+      message: errorMessage,
+      data: {
+        query: request.query,
+        body: request.body,
+        params: request.params,
+        method: request.method,
+        url: request.url,
+        timestamp: new Date(),
+        ip: request.ip,
+      },
     };
 
-    response.status(status).json({
-      code: status,
-      data: requestDetails,
-      message,
-    });
+    httpAdapter.reply(response, responseBody, httpStatus);
   }
 }
