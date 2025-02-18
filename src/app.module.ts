@@ -15,7 +15,7 @@ import { AllExceptionFilter } from './core/filter/all-exception.filter';
     UserModule,
     TagModule,
     CategoryModule,
-    LinkModule
+    LinkModule,
   ],
   controllers: [],
   providers: [

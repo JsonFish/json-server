@@ -1,39 +1,67 @@
 import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
-import eslint from '@eslint/js';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import typescriptEslintParser from '@typescript-eslint/parser';
+import importPlugin from 'eslint-plugin-import';
 import prettier from 'eslint-plugin-prettier';
-import globals from 'globals';
-import tseslint from 'typescript-eslint';
+import { resolve } from 'path';
 
-export default tseslint.config(
+export default [
   {
-    ignores: ['node_modules/**', 'eslint.config.mjs'], // 忽略 node_modules 目录和 eslint.config.js 文件
+    ignores: ['node_modules/**', './eslint.config.js'],
   },
-  eslint.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
-  eslintPluginPrettierRecommended,
   {
-    files: ['**/*.{js,ts}'], // 处理所有 .js 和 .ts 文件
+    files: ['**/*.{js,ts}'],
     languageOptions: {
-      globals: {
-        ...globals.node,
-        ...globals.jest,
-      },
       ecmaVersion: 2020,
       sourceType: 'module',
+      parser: typescriptEslintParser,
       parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
+        project: resolve('./tsconfig.json'),
       },
     },
-  },
-  {
+    plugins: {
+      '@typescript-eslint': typescriptEslintPlugin,
+      import: importPlugin,
+      prettier,
+    },
     rules: {
       ...typescriptEslintPlugin.configs.recommended.rules,
       ...prettier.configs.recommended.rules,
+      'prettier/prettier': [
+        'error',
+        {
+          endOfLine: 'auto',
+        },
+      ],
+      'import/order': [
+        'error',
+        {
+          groups: [
+            ['builtin', 'external'],
+            'internal',
+            ['parent', 'sibling', 'index'],
+          ],
+          'newlines-between': 'always',
+        },
+      ],
+      'padding-line-between-statements': [
+        'error',
+        { blankLine: 'always', prev: '*', next: 'return' },
+        { blankLine: 'always', prev: 'directive', next: '*' },
+        { blankLine: 'any', prev: 'directive', next: 'directive' },
+        { blankLine: 'always', prev: 'block', next: '*' },
+        { blankLine: 'always', prev: '*', next: 'block' },
+        { blankLine: 'always', prev: 'block-like', next: '*' },
+        { blankLine: 'always', prev: '*', next: 'block-like' },
+        { blankLine: 'always', prev: '*', next: 'function' },
+        { blankLine: 'always', prev: 'function', next: '*' },
+        { blankLine: 'always', prev: '*', next: ['const', 'let', 'var'] },
+        {
+          blankLine: 'any',
+          prev: ['const', 'let', 'var'],
+          next: ['const', 'let', 'var'],
+        },
+      ],
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn',
     },
   },
-);
+];

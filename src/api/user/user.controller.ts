@@ -6,7 +6,6 @@ import {
   Query,
   Put,
   Delete,
-
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -27,9 +26,7 @@ export class UserController {
   }
 
   @Put()
-  update(){
-
-  }
+  update() {}
   @Delete()
   remove() {}
 }
