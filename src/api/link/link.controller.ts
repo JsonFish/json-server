@@ -13,17 +13,17 @@ import { Link } from './entities/link.entity';
 @Controller('link')
 export class LinkController {
   constructor(private readonly linkService: LinkService) {}
-  @Get()
-  findAll() {
-    return this.linkService.findAll();
+  @Get('approved')
+  findApproved() {
+    return this.linkService.findApproved(1, 10);
   }
 
   @Post()
-  create(@Body() link: Link) {
-    return this.linkService.create(link);
+  create(@Body() link: any) {
+    return this.linkService.applyFor(link);
   }
 
-  @Put(':id')
+  @Put()
   update(@Param('id') id: string, @Body() link: Link) {
     return this.linkService.update(+id, link);
   }
