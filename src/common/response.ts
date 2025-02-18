@@ -6,7 +6,7 @@ export class Response<T> {
   static success<T>(data?: T, message = 'sucess'): Response<T> {
     return {
       code: 200,
-      data: data as T,
+      data,
       message,
     };
   }

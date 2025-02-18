@@ -3,7 +3,7 @@ import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common'
 import { LinkService } from './link.service';
 import { Link } from './entities/link.entity';
 
-@Controller('links')
+@Controller('link')
 export class LinkController {
   constructor(private readonly linkService: LinkService) {}
   @Get()

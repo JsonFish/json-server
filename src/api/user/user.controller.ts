@@ -3,9 +3,10 @@ import {
   Get,
   Post,
   Body,
-  Param,
   Query,
+  Put,
   Delete,
+
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -15,16 +16,20 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  findUsers(@Query() Query: { username: string }) {
+  findAll(@Query() Query: { username: string }) {
     console.log(Query);
-    return this.userService.findUserByUsername(Query.username);
+    return this.userService.getUserList();
   }
 
   @Post()
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  create(@Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(updateUserDto);
   }
 
+  @Put()
+  update(){
+
+  }
   @Delete()
-  blockUser() {}
+  remove() {}
 }

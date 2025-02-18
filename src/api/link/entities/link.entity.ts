@@ -11,17 +11,17 @@ export class Link {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  name: string;
+  // @Column()
+  // name: string;
 
-  @Column()
-  avatar: string;
+  // @Column()
+  // avatar: string;
 
-  @Column()
-  description: string;
+  // @Column()
+  // description: string;
 
-  @Column()
-  url: string;
+  // @Column()
+  // url: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   create_time: Date;

@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Link } from './entities/link.entity';
+import { Response } from '@/common/response'
 
 @Injectable()
 export class LinkService {
@@ -10,8 +11,10 @@ export class LinkService {
     private readonly linkRepository: Repository<Link>,
   ) {}
 
-  findAll(): Promise<Link[]> {
-    return this.linkRepository.find();
+  async findAll() {
+    throw new NotFoundException('文章不存在');
+    const linkList = await this.linkRepository.find()
+    return Response.success({linkList})
   }
 
   create(link: Link): Promise<Link> {

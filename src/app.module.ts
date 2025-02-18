@@ -4,6 +4,8 @@ import { APP_FILTER } from '@nestjs/core';
 import { UserModule } from './api/user/user.module';
 import { TagModule } from './api/tag/tag.module';
 import { CategoryModule } from './api/category/category.module';
+import { LinkModule } from './api/link/link.module';
+
 import mysqlConfig from './config/mysql.config';
 import { AllExceptionFilter } from './core/filter/all-exception.filter';
 
@@ -13,6 +15,7 @@ import { AllExceptionFilter } from './core/filter/all-exception.filter';
     UserModule,
     TagModule,
     CategoryModule,
+    LinkModule
   ],
   controllers: [],
   providers: [

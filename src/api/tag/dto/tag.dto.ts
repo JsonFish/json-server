@@ -17,14 +17,14 @@ export class TagNameDto {
 
 export class PaginationDto {
   @IsOptional()
-  @IsInt()
   @Type(() => Number)
+  @IsInt()
   @Min(1)
   currentPage: number = 1;
 
   @IsOptional()
-  @IsInt()
   @Type(() => Number)
+  @IsInt()
   @Min(5)
   pageSize: number = 10;
 }

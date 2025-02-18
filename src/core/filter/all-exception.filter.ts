@@ -13,7 +13,6 @@ export class AllExceptionFilter implements ExceptionFilter {
 
   catch(exception: HttpException, host: ArgumentsHost) {
     const errorMessage = exception.message;
-    const errorStackTrace = exception.stack ? exception.stack.split('\n') : [];
 
     const { httpAdapter } = this.httpAdapterHost;
     const ctx = host.switchToHttp();
