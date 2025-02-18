@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In, Not } from 'typeorm';
 import { Category } from './entities/category.entity';
-import { Response } from '@/common/response';
+import Response from '@/common/response';
 import {
   QueryCategoryDto,
   CreateCategoryDto,

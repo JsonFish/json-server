@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from './entities/tag.entity';
 import { Repository } from 'typeorm';
 import { QueryTagDto, CreateTagDto, UpdateTagDto } from './dto/tag.dto';
-import { Response } from '@/common/response';
+import Response from '@/common/response';
 import { In } from 'typeorm';
 @Injectable()
 export class TagService {

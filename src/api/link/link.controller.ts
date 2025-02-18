@@ -1,5 +1,12 @@
-
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { LinkService } from './link.service';
 import { Link } from './entities/link.entity';
 
