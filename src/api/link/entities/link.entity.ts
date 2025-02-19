@@ -37,4 +37,7 @@ export class Link {
 
   @Column({ default: 0 })
   status: number;
+
+  @Column({ default: 0 })
+  is_deleted: number;
 }
