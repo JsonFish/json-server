@@ -25,7 +25,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       params: request.params,
       method: request.method,
       url: request.url,
-      timestamp: new Date().toString(),
       ip: request.ip,
     };
 

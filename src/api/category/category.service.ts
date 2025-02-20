@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In, Not } from 'typeorm';
 import { Category } from './entities/category.entity';
-import Response from '@/common/response';
 import {
   QueryCategoryDto,
   CreateCategoryDto,
@@ -28,7 +27,7 @@ export class CategoryService {
     queryBuilder.skip((currentPage - 1) * pageSize).take(pageSize);
     const [categoryList, total] = await queryBuilder.getManyAndCount();
 
-    return Response.success({ categoryList, total });
+    return { categoryList, total };
   }
 
   async addCategory({ categoryName }: CreateCategoryDto) {
@@ -37,13 +36,13 @@ export class CategoryService {
       where: { categoryName },
     });
     if (existCategory) {
-      return Response.error('分类已存在');
+      throw Error('分类已存在');
     }
 
     // 创建新分类
     const newCategory = this.categoryRepository.create({ categoryName });
     await this.categoryRepository.save(newCategory);
-    return Response.success();
+    return;
   }
 
   async updateCategory({ id, categoryName }: UpdateCategoryDto) {
@@ -52,7 +51,7 @@ export class CategoryService {
       where: { id },
     });
     if (!existCategory) {
-      return Response.error('分类不存在');
+      throw Error('分类不存在');
     }
 
     // 检查新分类名是否与其他分类重复
@@ -60,13 +59,13 @@ export class CategoryService {
       where: { categoryName, id: Not(id) },
     });
     if (duplicateCategory) {
-      return Response.error('分类名已存在');
+      throw Error('分类名已存在');
     }
 
     // 更新分类
     existCategory.categoryName = categoryName;
     await this.categoryRepository.save(existCategory);
-    return Response.success();
+    return;
   }
 
   async deleteCategories(ids: number[]) {
@@ -75,10 +74,10 @@ export class CategoryService {
       id: In(ids),
     });
     if (existCategories.length !== ids.length) {
-      return Response.error('部分分类不存在');
+      throw Error('部分分类不存在');
     }
 
     await this.categoryRepository.delete(ids);
-    return Response.success();
+    return;
   }
 }

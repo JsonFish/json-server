@@ -6,6 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
@@ -33,7 +34,6 @@ export class AllExceptionFilter implements ExceptionFilter {
         params: request.params,
         method: request.method,
         url: request.url,
-        timestamp: new Date(),
         ip: request.ip,
       },
     };

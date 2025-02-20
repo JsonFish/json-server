@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Link } from './entities/link.entity';
-import Response from '@/common/response';
 
 @Injectable()
 export class LinkService {
@@ -18,7 +17,7 @@ export class LinkService {
       skip: (page - 1) * limit,
       take: limit,
     });
-    return Response.success({ linkList, total });
+    return { linkList, total };
   }
 
   async findUnaudited(query) {
@@ -28,24 +27,23 @@ export class LinkService {
       skip: (page - 1) * limit,
       take: limit,
     });
-    return Response.success({ linkList, total });
+    return { linkList, total };
   }
 
   async applyFor(link: any) {
     await this.linkRepository.save(link);
-    return Response.success();
+    return;
   }
 
   async examine(body: any) {
     const { id } = body;
     const link = await this.linkRepository.findOne({ where: { id } });
     if (!link) {
-      throw new Error('链接不存在'); // 或者使用自定义异常处理
+      throw Error('该友链不存在');
     }
 
-    console.log(id);
-    const res = await this.linkRepository.update(id, { status: 1 });
-    return res;
+    await this.linkRepository.update(id, { status: 1 });
+    return;
   }
 
   async update(id: number, link: Link): Promise<void> {
