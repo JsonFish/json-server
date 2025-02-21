@@ -5,9 +5,11 @@ import { UserModule } from './api/user/user.module';
 import { TagModule } from './api/tag/tag.module';
 import { CategoryModule } from './api/category/category.module';
 import { LinkModule } from './api/link/link.module';
+import { AuthModule } from './api/auth/auth.module';
 import mysqlConfig from './config/mysql.config';
 import { AllExceptionFilter } from './core/filter/all-exception.filter';
 import { TransformInterceptor } from './core/interceptor/transform.interceptor';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot(mysqlConfig),
@@ -15,6 +17,7 @@ import { TransformInterceptor } from './core/interceptor/transform.interceptor';
     TagModule,
     CategoryModule,
     LinkModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [
