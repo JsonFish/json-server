@@ -34,7 +34,6 @@ export class AllExceptionFilter implements ExceptionFilter {
         params: request.params,
         method: request.method,
         url: request.url,
-        ip: request.ip,
       },
     };
 

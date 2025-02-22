@@ -9,7 +9,8 @@ import { AuthModule } from './api/auth/auth.module';
 import mysqlConfig from './config/mysql.config';
 import { AllExceptionFilter } from './core/filter/all-exception.filter';
 import { TransformInterceptor } from './core/interceptor/transform.interceptor';
-
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './core/guard/auth.guard';
 @Module({
   imports: [
     TypeOrmModule.forRoot(mysqlConfig),
@@ -28,6 +29,10 @@ import { TransformInterceptor } from './core/interceptor/transform.interceptor';
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
     },
   ],
 })

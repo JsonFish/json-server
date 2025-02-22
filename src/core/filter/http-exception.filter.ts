@@ -25,10 +25,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       params: request.params,
       method: request.method,
       url: request.url,
-      ip: request.ip,
     };
-
-    response.status(status).json({
+    const statusCode = status == 400 ? 200 : status;
+    response.status(statusCode).json({
       code: status,
       message,
       data: requestDetails,
