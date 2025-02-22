@@ -14,6 +14,7 @@ import {
   UpdateTagDto,
   DeleteTagsDto,
 } from './dto/tag.dto';
+import { Public } from '@/core/guard/public.decorator';
 
 @Controller('tag')
 export class TagController {

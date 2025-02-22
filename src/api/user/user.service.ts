@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
@@ -11,12 +10,13 @@ export class UserService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  getUserList() {
-    return `This action returns all user`;
+  async findAll(Query: any) {
+    const { email, id } = Query;
+    return await this.usersRepository.find({ where: { email, id } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(email: string) {
+    return `This action returns a #${email} user`;
   }
 
   update(updateUserDto: UpdateUserDto) {

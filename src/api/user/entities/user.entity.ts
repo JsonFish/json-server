@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('users')
+@Entity('user')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -39,7 +39,7 @@ export class User {
   ip: string;
 
   @Column()
-  ipAddress: string;
+  ip_Address: string;
 
   @Column()
   github_id: string;

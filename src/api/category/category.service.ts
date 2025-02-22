@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In, Not } from 'typeorm';
 import { Category } from './entities/category.entity';
@@ -36,7 +36,7 @@ export class CategoryService {
       where: { categoryName },
     });
     if (existCategory) {
-      throw Error('分类已存在');
+      throw new BadRequestException('分类已存在');
     }
 
     // 创建新分类
@@ -51,7 +51,7 @@ export class CategoryService {
       where: { id },
     });
     if (!existCategory) {
-      throw Error('分类不存在');
+      throw new BadRequestException('分类不存在');
     }
 
     // 检查新分类名是否与其他分类重复
@@ -59,7 +59,7 @@ export class CategoryService {
       where: { categoryName, id: Not(id) },
     });
     if (duplicateCategory) {
-      throw Error('分类名已存在');
+      throw new BadRequestException('分类名已存在');
     }
 
     // 更新分类
@@ -74,7 +74,7 @@ export class CategoryService {
       id: In(ids),
     });
     if (existCategories.length !== ids.length) {
-      throw Error('部分分类不存在');
+      throw new BadRequestException('部分分类不存在');
     }
 
     await this.categoryRepository.delete(ids);

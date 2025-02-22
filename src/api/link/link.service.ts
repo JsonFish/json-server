@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Link } from './entities/link.entity';
@@ -39,7 +39,7 @@ export class LinkService {
     const { id } = body;
     const link = await this.linkRepository.findOne({ where: { id } });
     if (!link) {
-      throw Error('该友链不存在');
+      throw new BadRequestException('该友链不存在');
     }
 
     await this.linkRepository.update(id, { status: 1 });

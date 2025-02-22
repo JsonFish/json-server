@@ -15,9 +15,8 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  findAll(@Query() Query: { username: string }) {
-    console.log(Query);
-    return this.userService.getUserList();
+  findAll(@Query() Query: any) {
+    return this.userService.findAll(Query);
   }
 
   @Post()
