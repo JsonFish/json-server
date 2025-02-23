@@ -9,7 +9,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { LinkService } from './link.service';
-import { Link } from './entities/link.entity';
 
 @Controller('link')
 export class LinkController {
@@ -40,7 +39,7 @@ export class LinkController {
 
   // 修改
   @Put()
-  update(@Param('id') id: string, @Body() link: Link) {
+  update(@Param('id') id: string, @Body() link: any) {
     return this.linkService.update(+id, link);
   }
 

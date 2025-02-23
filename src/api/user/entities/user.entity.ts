@@ -9,7 +9,7 @@ import {
 @Entity('user')
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: string;
 
   @Column()
   username: string;
@@ -20,7 +20,7 @@ export class User {
   @Column()
   email: string;
 
-  @Column({ default: 1 })
+  @Column({ default: 0 })
   role: number;
 
   @Column()
@@ -39,7 +39,7 @@ export class User {
   ip: string;
 
   @Column()
-  ip_Address: string;
+  ip_address: string;
 
   @Column()
   github_id: string;

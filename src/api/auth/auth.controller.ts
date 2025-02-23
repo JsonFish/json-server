@@ -10,7 +10,7 @@ import {
 import { Request } from 'express';
 import { Public } from '@/core/guard/public.decorator';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/auth.dto';
+import { LoginDto, RegisterDto, EmailDto } from './dto/auth.dto';
 
 export interface AuthorizedRequest extends Request {
   user: {
@@ -40,19 +40,25 @@ export class AuthController {
     return await this.authService.login(loginDto);
   }
 
+  @Public()
+  @Post('register')
+  async register(@Body() RegisterDto: RegisterDto, @Req() request: Request) {
+    return await this.authService.register(RegisterDto, request.ip);
+  }
+
   @Get('refresh')
   refresh(@Req() request: AuthorizedRequest) {
     return this.authService.refreshToken(request);
   }
 
   @Public()
-  @Post('register')
-  register(@Body() createAuthDto: LoginDto) {}
+  @Post('email')
+  async email(@Body() EmailDto: EmailDto) {
+    const email = EmailDto.email;
+    return await this.authService.sendEmail(email);
+  }
 
   @Public()
-  @Post('email')
-  email(@Body() createAuthDto: LoginDto) {}
-
   @Post('github')
   github(@Body() createAuthDto: LoginDto) {}
 }

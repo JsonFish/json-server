@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { AddUserDto } from './dto/user.dto';
+import { User } from './entities/user.entity';
+
+import * as nanoid from 'nanoid';
+import * as bcrypt from 'bcrypt';
+import axios from 'axios';
 @Injectable()
 export class UserService {
   constructor(
@@ -19,11 +23,27 @@ export class UserService {
     return `This action returns a #${email} user`;
   }
 
-  update(updateUserDto: UpdateUserDto) {
-    console.log(updateUserDto);
-  }
+  async addUser(userInfo: AddUserDto, ip: string | undefined) {
+    const { email, password } = userInfo;
+    const id = nanoid.customAlphabet('1234567890', 10)();
+    const username = email.split('@')[0];
+    const bcryptPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+    const avatar = 'http://cdn.jsonblog.top/defaultAvatar.png';
+    let ip_address = '';
+    if (ip) {
+      const res = await axios.get(`http://ip-api.com/json/${ip}?lang=zh-CN`);
+      ip_address = `${res.data.country}-${res.data.regionName}-${res.data.city}`;
+    }
 
-  remove(id: number[]) {
-    return this.usersRepository.delete(id);
+    await this.usersRepository.save({
+      id,
+      username,
+      email,
+      password: bcryptPassword,
+      avatar,
+      ip,
+      ip_address,
+    });
+    return 'success';
   }
 }

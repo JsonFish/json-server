@@ -6,9 +6,12 @@ import {
   Query,
   Put,
   Delete,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
+import { AddUserDto } from './dto/user.dto';
 import { UserService } from './user.service';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Public } from '@/core/guard/public.decorator';
 
 @Controller('user')
 export class UserController {
@@ -19,11 +22,11 @@ export class UserController {
     return this.userService.findAll(Query);
   }
 
+  @Public()
   @Post()
-  create(@Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(updateUserDto);
+  addUser(@Req() request: Request, @Body() addUserDto: AddUserDto) {
+    return this.userService.addUser(addUserDto, request.ip);
   }
-
   @Put()
   update() {}
   @Delete()
