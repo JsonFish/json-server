@@ -7,26 +7,13 @@ import {
   IsNotEmpty,
   IsArray,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { PaginationDto } from '@/common/dto/pagination.dto';
+
 export class TagNameDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(10)
   tagName: string;
-}
-
-export class PaginationDto {
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(1)
-  page: number = 1;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(5)
-  pageSize: number = 10;
 }
 
 export class CreateTagDto extends TagNameDto {}
