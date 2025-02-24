@@ -8,48 +8,31 @@ import {
   IsArray,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-export class LinkDto {
-  @IsNotEmpty()
+
+import { PaginationDto } from '@/common/dto/pagination.dto';
+
+export class CreateLinkDto {
   @IsString()
-  @MaxLength(20)
   name: string;
 
-  @IsNotEmpty()
   @IsString()
-  avatar_url: string;
+  avatarUrl: string;
 
-  @IsNotEmpty()
   @IsString()
   description: string;
 
-  @IsNotEmpty()
   @IsString()
   url: string;
 
-  @IsNotEmpty()
   @IsString()
-  user_id: string;
-
-  @IsNotEmpty()
-  @IsString()
-  email: string;
+  userId: string;
 }
 
-export class PaginationDto {
-  @IsOptional()
+export class QueryLinkDto extends PaginationDto {
   @Type(() => Number)
   @IsInt()
-  @Min(1)
-  page: number = 1;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(10)
-  limit: number = 10;
+  status: number;
 }
-
-export class CreateTagDto extends LinkDto {}
 
 export class QueryTagDto extends PaginationDto {
   @IsOptional()
@@ -58,7 +41,7 @@ export class QueryTagDto extends PaginationDto {
   tagName: string;
 }
 
-export class UpdateTagDto extends LinkDto {
+export class UpdateTagDto extends QueryLinkDto {
   @IsNotEmpty()
   @IsInt()
   id: number;

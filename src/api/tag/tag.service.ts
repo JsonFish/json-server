@@ -11,13 +11,13 @@ export class TagService {
     private readonly tagRepository: Repository<Tag>,
   ) {}
 
-  async getTag({ currentPage, pageSize, tagName }: QueryTagDto) {
+  async getTag({ page, pageSize, tagName }: QueryTagDto) {
     const queryBuilder = this.tagRepository.createQueryBuilder('tag');
 
     if (tagName)
       queryBuilder.where('tagName LIKE :tagName', { tagName: `%${tagName}%` });
 
-    queryBuilder.skip((currentPage - 1) * pageSize).take(pageSize);
+    queryBuilder.skip((page - 1) * pageSize).take(pageSize);
     const [tagList, total] = await queryBuilder.getManyAndCount();
 
     return { tagList, total };

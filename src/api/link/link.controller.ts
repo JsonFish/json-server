@@ -9,20 +9,14 @@ import {
   Query,
 } from '@nestjs/common';
 import { LinkService } from './link.service';
-
+import { QueryLinkDto } from './dto/link.dto';
 @Controller('link')
 export class LinkController {
   constructor(private readonly linkService: LinkService) {}
-  // 获取审核通过的
-  @Get('approved')
-  findApproved(@Query() query: any) {
-    return this.linkService.findApproved(query);
-  }
 
-  // 获取未审核的
-  @Get('unaudited')
-  findUnaudited(@Query() query: any) {
-    return this.linkService.findUnaudited(query);
+  @Get()
+  findAll(@Query() query: QueryLinkDto) {
+    return this.linkService.findAll(query);
   }
 
   // 申请友链

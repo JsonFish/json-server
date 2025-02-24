@@ -15,7 +15,7 @@ export class CategoryService {
     private readonly categoryRepository: Repository<Category>,
   ) {}
 
-  async getCategory({ currentPage, pageSize, categoryName }: QueryCategoryDto) {
+  async getCategory({ page, pageSize, categoryName }: QueryCategoryDto) {
     const queryBuilder = this.categoryRepository.createQueryBuilder('category');
 
     if (categoryName) {
@@ -24,7 +24,7 @@ export class CategoryService {
       });
     }
 
-    queryBuilder.skip((currentPage - 1) * pageSize).take(pageSize);
+    queryBuilder.skip((page - 1) * pageSize).take(pageSize);
     const [categoryList, total] = await queryBuilder.getManyAndCount();
 
     return { categoryList, total };

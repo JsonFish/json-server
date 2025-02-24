@@ -30,20 +30,17 @@ export class AuthController {
 
   @Public()
   @Post('login')
-  async login(
-    @Body() loginDto: LoginDto,
-    @Session() session: Record<string, any>,
-  ) {
+  login(@Body() loginDto: LoginDto, @Session() session: Record<string, any>) {
     if (loginDto.code != session.captchaCode) {
       throw new BadRequestException('验证码错误');
     }
-    return await this.authService.login(loginDto);
+    return this.authService.login(loginDto);
   }
 
   @Public()
   @Post('register')
-  async register(@Body() RegisterDto: RegisterDto, @Req() request: Request) {
-    return await this.authService.register(RegisterDto, request.ip);
+  register(@Body() RegisterDto: RegisterDto, @Req() request: Request) {
+    return this.authService.register(RegisterDto, request.ip);
   }
 
   @Get('refresh')
@@ -53,9 +50,9 @@ export class AuthController {
 
   @Public()
   @Post('email')
-  async email(@Body() EmailDto: EmailDto) {
+  email(@Body() EmailDto: EmailDto) {
     const email = EmailDto.email;
-    return await this.authService.sendEmail(email);
+    return this.authService.sendEmail(email);
   }
 
   @Public()

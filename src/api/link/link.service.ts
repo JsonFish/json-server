@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Link } from './entities/link.entity';
-
+import { QueryLinkDto, CreateLinkDto } from './dto/link.dto';
 @Injectable()
 export class LinkService {
   constructor(
@@ -10,29 +10,18 @@ export class LinkService {
     private readonly linkRepository: Repository<Link>,
   ) {}
 
-  async findApproved(query) {
-    const { page, limit } = query;
+  async findAll(query: QueryLinkDto) {
+    const { page, pageSize, status } = query;
     const [linkList, total] = await this.linkRepository.findAndCount({
-      where: { status: 1, is_deleted: 0 },
-      skip: (page - 1) * limit,
-      take: limit,
+      where: { status, is_deleted: 0 },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
     });
     return { linkList, total };
   }
 
-  async findUnaudited(query) {
-    const { page, limit } = query;
-    const [linkList, total] = await this.linkRepository.findAndCount({
-      where: { status: 0, is_deleted: 0 },
-      skip: (page - 1) * limit,
-      take: limit,
-    });
-    return { linkList, total };
-  }
-
-  async applyFor(link: any) {
+  async applyFor(link: CreateLinkDto) {
     await this.linkRepository.save(link);
-    return;
   }
 
   async examine(body: any) {
