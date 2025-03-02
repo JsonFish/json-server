@@ -1,7 +1,6 @@
 import {
   IsString,
   IsInt,
-  Min,
   IsOptional,
   MaxLength,
   IsNotEmpty,

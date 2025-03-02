@@ -7,13 +7,17 @@ import {
   Param,
   Delete,
   Query,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { LinkService } from './link.service';
 import { QueryLinkDto } from './dto/link.dto';
+import { Public } from '@/core/guard/public.decorator';
 @Controller('link')
 export class LinkController {
   constructor(private readonly linkService: LinkService) {}
 
+  @Public()
   @Get()
   findAll(@Query() query: QueryLinkDto) {
     return this.linkService.findAll(query);
@@ -21,7 +25,7 @@ export class LinkController {
 
   // 申请友链
   @Post()
-  create(@Body() link: any) {
+  create(@Body() link: any, @Req() request: Request) {
     return this.linkService.applyFor(link);
   }
 

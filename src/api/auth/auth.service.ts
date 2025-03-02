@@ -88,7 +88,6 @@ export class AuthService {
       throw new BadRequestException('验证码已过期');
     }
     await this.UserService.addUser({ email, password }, ip);
-    return;
   }
 
   async refreshToken(request: AuthorizedRequest) {

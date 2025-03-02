@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AddUserDto } from './dto/user.dto';
-import { User } from './entities/user.entity';
-
 import * as nanoid from 'nanoid';
 import * as bcrypt from 'bcrypt';
 import axios from 'axios';
+import { AddUserDto } from './dto/user.dto';
+import { User } from './entities/user.entity';
+import userConfig from '@/config/user.config';
+
 @Injectable()
 export class UserService {
   constructor(
@@ -28,11 +29,11 @@ export class UserService {
     const id = nanoid.customAlphabet('1234567890', 10)();
     const username = email.split('@')[0];
     const bcryptPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-    const avatar = 'http://cdn.jsonblog.top/defaultAvatar.png';
-    let ip_address = '';
+    let ip_address = '-';
     if (ip) {
       const res = await axios.get(`http://ip-api.com/json/${ip}?lang=zh-CN`);
-      ip_address = `${res.data.country}-${res.data.regionName}-${res.data.city}`;
+      if (res.data.status == 'success')
+        ip_address = `${res.data.country}-${res.data.regionName}-${res.data.city}`;
     }
 
     await this.usersRepository.save({
@@ -40,10 +41,10 @@ export class UserService {
       username,
       email,
       password: bcryptPassword,
-      avatar,
+      avatar: userConfig.defaultAvatar,
       ip,
       ip_address,
     });
-    return 'success';
+    return;
   }
 }
