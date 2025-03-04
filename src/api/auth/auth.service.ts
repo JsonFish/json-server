@@ -13,6 +13,9 @@ import type { Transporter } from 'nodemailer';
 import emailConfig, { mailOptions } from '@/config/email.config';
 import * as nanoid from 'nanoid';
 import { EmailCode } from './entities/email-code.entity';
+import axios from 'axios';
+import githubConfig from '@/config/github.config';
+
 @Injectable()
 export class AuthService {
   private transporter: Transporter;
@@ -93,6 +96,21 @@ export class AuthService {
   async refreshToken(request: AuthorizedRequest) {
     const { id } = request.user;
     return await this.generateToken(id);
+  }
+
+  async loginByGithub(body: any) {
+    const { code } = body;
+    if (!code) throw new BadRequestException('登录失败，请稍后再试');
+    const response = await axios.post(
+      'https://github.com/login/oauth/access_token',
+      {
+        client_id: githubConfig.client_id,
+        client_secret: githubConfig.client_secret,
+        code,
+      },
+    );
+    if (response?.data?.access_token) {
+    }
   }
 
   private async generateToken(id: string | number) {

@@ -57,5 +57,7 @@ export class AuthController {
 
   @Public()
   @Post('github')
-  github(@Body() createAuthDto: LoginDto) {}
+  github(@Body() body: any) {
+    return this.authService.loginByGithub(body);
+  }
 }
