@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Link } from './entities/link.entity';
-import { QueryLinkDto, CreateLinkDto } from './dto/link.dto';
+import { QueryLinkDto, CreateLinkDto, ExamineLinkDto } from './dto/link.dto';
 @Injectable()
 export class LinkService {
   constructor(
@@ -20,18 +20,25 @@ export class LinkService {
     return { linkList, total };
   }
 
-  async applyFor(link: CreateLinkDto) {
-    await this.linkRepository.save(link);
+  async applyFor(linkData: CreateLinkDto, userId: string) {
+    const link = await this.linkRepository.findOne({
+      where: { user_id: userId, is_deleted: 0 },
+    });
+    if (link) {
+      throw new BadRequestException('你已申请，请勿重复申请');
+    }
+    await this.linkRepository.save({ ...linkData, user_id: userId });
   }
 
-  async examine(body: any) {
-    const { id } = body;
-    const link = await this.linkRepository.findOne({ where: { id } });
+  async examine(body: ExamineLinkDto) {
+    const { id, status } = body;
+    const link = await this.linkRepository.findOne({
+      where: { id, is_deleted: 0 },
+    });
     if (!link) {
       throw new BadRequestException('该友链不存在');
     }
-
-    await this.linkRepository.update(id, { status: 1 });
+    await this.linkRepository.update(id, { status });
     return;
   }
 

@@ -18,6 +18,7 @@ export interface AuthorizedRequest extends Request {
     email: string;
   };
 }
+
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

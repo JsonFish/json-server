@@ -11,27 +11,31 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { LinkService } from './link.service';
-import { QueryLinkDto } from './dto/link.dto';
-import { Public } from '@/core/guard/public.decorator';
+import { QueryLinkDto, CreateLinkDto, ExamineLinkDto } from './dto/link.dto';
+
+export interface RequestType extends Request {
+  user: {
+    id: string;
+  };
+}
 @Controller('link')
 export class LinkController {
   constructor(private readonly linkService: LinkService) {}
 
-  @Public()
   @Get()
-  findAll(@Query() query: QueryLinkDto) {
+  findAll(@Query() query: QueryLinkDto, @Req() request: Request) {
     return this.linkService.findAll(query);
   }
 
   // 申请友链
   @Post()
-  create(@Body() link: any, @Req() request: Request) {
-    return this.linkService.applyFor(link);
+  create(@Body() link: CreateLinkDto, @Req() request: RequestType) {
+    return this.linkService.applyFor(link, request.user.id);
   }
 
   // 审核友链
   @Post('agree')
-  examine(@Body() body: any) {
+  examine(@Body() body: ExamineLinkDto) {
     return this.linkService.examine(body);
   }
 

@@ -13,19 +13,20 @@ import { PaginationDto } from '@/common/dto/pagination.dto';
 
 export class CreateLinkDto {
   @IsString()
+  @MaxLength(20)
   name: string;
 
   @IsString()
+  @MaxLength(255)
   avatarUrl: string;
 
   @IsString()
+  @MaxLength(45)
   description: string;
 
   @IsString()
+  @MaxLength(45)
   url: string;
-
-  @IsString()
-  userId: string;
 }
 
 export class QueryLinkDto extends PaginationDto {
@@ -34,11 +35,14 @@ export class QueryLinkDto extends PaginationDto {
   status: number;
 }
 
-export class QueryTagDto extends PaginationDto {
-  @IsOptional()
-  @IsString()
-  @MaxLength(10)
-  tagName: string;
+export class ExamineLinkDto {
+  @IsNotEmpty()
+  @IsInt()
+  id: number;
+
+  @IsNotEmpty()
+  @IsInt()
+  status: number;
 }
 
 export class UpdateTagDto extends QueryLinkDto {

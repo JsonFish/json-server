@@ -24,7 +24,7 @@ export class Link {
   url: string;
 
   @Column()
-  user_id: number;
+  user_id: string;
 
   @Column()
   email: number;
