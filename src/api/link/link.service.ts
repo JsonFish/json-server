@@ -31,14 +31,14 @@ export class LinkService {
   }
 
   async examine(body: ExamineLinkDto) {
-    const { id, status } = body;
+    const { id } = body;
     const link = await this.linkRepository.findOne({
       where: { id, is_deleted: 0 },
     });
     if (!link) {
       throw new BadRequestException('该友链不存在');
     }
-    await this.linkRepository.update(id, { status });
+    await this.linkRepository.update(id, { status: 1 });
     return;
   }
 

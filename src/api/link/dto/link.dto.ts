@@ -39,10 +39,6 @@ export class ExamineLinkDto {
   @IsNotEmpty()
   @IsInt()
   id: number;
-
-  @IsNotEmpty()
-  @IsInt()
-  status: number;
 }
 
 export class UpdateTagDto extends QueryLinkDto {

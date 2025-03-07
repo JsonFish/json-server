@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { AddUserDto } from './dto/user.dto';
 import { User } from './entities/user.entity';
 import userConfig from '@/config/user.config';
-import getIpAddress, { IpData } from '@/utils/ip-address';
+import getIpAddress from '@/utils/ip-address';
 @Injectable()
 export class UserService {
   constructor(
@@ -23,28 +23,28 @@ export class UserService {
     return `This action returns a #${email} user`;
   }
 
-  async addUser(userInfo: AddUserDto, ip: string | undefined) {
+  async addUser(userInfo: AddUserDto, requestIp: string | undefined) {
     const { email, password } = userInfo;
     const id = nanoid.customAlphabet('1234567890', 10)();
     const username = email.split('@')[0];
     const bcryptPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-    let ip_address = '-';
-
-    const ipData: IpData | boolean = await getIpAddress(ip as string);
-    if (ipData) {
-      const { country, regionName, city } = ipData;
-      ip_address = `${country}-${regionName}-${city}`;
+    let ip_address = '';
+    let formatIp = '';
+    if (requestIp) {
+      const { ip, province } = await getIpAddress(requestIp);
+      formatIp = ip;
+      ip_address = province ? province : '';
     }
-
-    await this.usersRepository.save({
+    const userInfoData = {
       id,
       username,
       email,
       password: bcryptPassword,
       avatar: userConfig.defaultAvatar,
-      ip,
+      ip: formatIp,
       ip_address,
-    });
-    return;
+    };
+    await this.usersRepository.save(userInfoData);
+    return userInfoData;
   }
 }

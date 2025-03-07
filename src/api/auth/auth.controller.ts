@@ -16,6 +16,7 @@ export interface AuthorizedRequest extends Request {
   user: {
     id: string;
     email: string;
+    username: string;
   };
 }
 

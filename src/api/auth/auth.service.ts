@@ -4,16 +4,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as captchapng from 'captchapng';
 import * as bcrypt from 'bcrypt';
+import axios from 'axios';
+import * as nanoid from 'nanoid';
+import * as nodemailer from 'nodemailer';
+import type { Transporter } from 'nodemailer';
 import { UserService } from '../user/user.service';
 import { LoginDto, RegisterDto } from './dto/auth.dto';
 import secretKey from '@/config/jwt.config';
 import { AuthorizedRequest } from './auth.controller';
-import * as nodemailer from 'nodemailer';
-import type { Transporter } from 'nodemailer';
 import emailConfig, { mailOptions } from '@/config/email.config';
-import * as nanoid from 'nanoid';
 import { EmailCode } from './entities/email-code.entity';
-import axios from 'axios';
 import githubConfig from '@/config/github.config';
 
 @Injectable()
@@ -22,7 +22,6 @@ export class AuthService {
   constructor(
     @InjectRepository(EmailCode)
     private readonly EmailCodeRepository: Repository<EmailCode>,
-
     private JwtService: JwtService,
     private UserService: UserService,
   ) {}
@@ -30,7 +29,6 @@ export class AuthService {
   getCaptcha(session: Record<string, any>) {
     const code = nanoid.customAlphabet('1234567890', 4)();
     session.captchaCode = code;
-
     const png = new captchapng(120, 45, code);
     png.color(255, 255, 255, 0);
     png.color(104, 105, 109);
@@ -42,14 +40,15 @@ export class AuthService {
     if (res.length == 0) {
       throw new BadRequestException('账号未注册');
     }
-
     const { id, username, avatar, password } = res[0];
     const compareResult = bcrypt.compareSync(loginDto.password, password);
     if (!compareResult) {
       throw new BadRequestException('密码错误');
     }
-
-    const { accessToken, refreshToken } = await this.generateToken(id);
+    const { accessToken, refreshToken } = await this.generateToken(
+      id,
+      username,
+    );
     return { username, avatar, accessToken, refreshToken };
   }
 
@@ -79,10 +78,7 @@ export class AuthService {
       where: { email },
       order: { send_time: 'DESC' },
     });
-    if (!result) {
-      throw new BadRequestException('验证码无效');
-    }
-    if (result.code !== code) {
+    if (!result || result.code !== code) {
       throw new BadRequestException('验证码错误');
     }
     const timeDifference =
@@ -90,12 +86,20 @@ export class AuthService {
     if (timeDifference > 5) {
       throw new BadRequestException('验证码已过期');
     }
-    await this.UserService.addUser({ email, password }, ip);
+    const { id, username, avatar } = await this.UserService.addUser(
+      { email, password },
+      ip,
+    );
+    const { accessToken, refreshToken } = await this.generateToken(
+      id,
+      username,
+    );
+    return { username, avatar, accessToken, refreshToken };
   }
 
   async refreshToken(request: AuthorizedRequest) {
-    const { id } = request.user;
-    return await this.generateToken(id);
+    const { id, username } = request.user;
+    return await this.generateToken(id, username);
   }
 
   async loginByGithub(body: any) {
@@ -113,13 +117,13 @@ export class AuthService {
     }
   }
 
-  private async generateToken(id: string | number) {
+  private async generateToken(id: string | number, username: string) {
     const accessToken = await this.JwtService.signAsync(
-      { id },
+      { id, username },
       { expiresIn: '1h', secret: secretKey.accessSecretKey },
     );
     const refreshToken = this.JwtService.sign(
-      { id },
+      { id, username },
       { expiresIn: '1d', secret: secretKey.refreshSecretKey },
     );
     return { accessToken, refreshToken };

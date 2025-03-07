@@ -1,18 +1,20 @@
 import axios from 'axios';
 
 export interface IpData {
-  country: string;
-  regionName: string;
-  city: string;
+  ip: string;
+  country?: string;
+  province?: string;
+  city?: string;
 }
 
-async function getIpAddress(ip: string): Promise<IpData | false> {
-  if (!ip) return false;
+async function getIpAddress(ip: string): Promise<IpData> {
+  ip = ip?.replace(/^.*:/, '');
   const ipData = await axios.get(`http://ip-api.com/json/${ip}?lang=zh-CN`);
-  if (ipData.data.status !== 'success') return false;
+  if (ipData.data.status !== 'success') return { ip };
   return {
+    ip,
     country: ipData.data.country,
-    regionName: ipData.data.regionName,
+    province: ipData.data.regionName,
     city: ipData.data.city,
   };
 }
