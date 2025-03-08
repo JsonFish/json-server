@@ -14,7 +14,7 @@ async function getIpAddress(ip: string): Promise<IpData> {
   return {
     ip,
     country: ipData.data.country,
-    province: ipData.data.regionName,
+    province: ipData.data.regionName.slice(0, -1),
     city: ipData.data.city,
   };
 }
