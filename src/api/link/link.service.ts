@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository, Like } from 'typeorm';
 import { Link } from './entities/link.entity';
 import { QueryLinkDto, CreateLinkDto, ExamineLinkDto } from './dto/link.dto';
 @Injectable()
@@ -11,9 +11,9 @@ export class LinkService {
   ) {}
 
   async findAll(query: QueryLinkDto) {
-    const { page, pageSize, status } = query;
+    const { page, pageSize, status, name } = query;
     const [linkList, total] = await this.linkRepository.findAndCount({
-      where: { status, is_deleted: 0 },
+      where: { name: Like(`%${name}%`), status, is_deleted: 0 },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
@@ -46,7 +46,12 @@ export class LinkService {
     await this.linkRepository.update(id, link);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number[]): Promise<void> {
+    const existLinks = await this.linkRepository.findBy({ id: In(id) });
+    if (existLinks.length !== id.length) {
+      throw new BadRequestException('删除失败');
+    }
     await this.linkRepository.delete(id);
+    return;
   }
 }

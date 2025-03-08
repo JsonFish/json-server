@@ -1,21 +1,26 @@
-import { IsString, IsNotEmpty, IsEmail, MinLength } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsEmail,
+  MinLength,
+  MaxLength,
+} from 'class-validator';
 
 export class EmailDto {
-  @IsNotEmpty()
+  @MaxLength(45)
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 }
 export class LoginDto extends EmailDto {
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   password: string;
 
-  @IsNotEmpty()
-  @IsString()
   @MinLength(4)
+  @IsString()
+  @IsNotEmpty()
   code: string;
 }
 
 export class RegisterDto extends LoginDto {}
-
-export class UpdateAuthDto {}

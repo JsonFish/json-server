@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from './entities/tag.entity';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { QueryTagDto, CreateTagDto, UpdateTagDto } from './dto/tag.dto';
 import { In } from 'typeorm';
 @Injectable()
@@ -12,14 +12,11 @@ export class TagService {
   ) {}
 
   async getTag({ page, pageSize, tagName }: QueryTagDto) {
-    const queryBuilder = this.tagRepository.createQueryBuilder('tag');
-
-    if (tagName)
-      queryBuilder.where('tagName LIKE :tagName', { tagName: `%${tagName}%` });
-
-    queryBuilder.skip((page - 1) * pageSize).take(pageSize);
-    const [tagList, total] = await queryBuilder.getManyAndCount();
-
+    const [tagList, total] = await this.tagRepository.findAndCount({
+      where: { tagName: Like(`%${tagName}%`) },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
     return { tagList, total };
   }
 

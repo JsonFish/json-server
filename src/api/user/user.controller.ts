@@ -8,27 +8,25 @@ import {
   Delete,
   Req,
 } from '@nestjs/common';
-import { Request } from 'express';
-import { AddUserDto } from './dto/user.dto';
 import { UserService } from './user.service';
-import { Public } from '@/core/guard/public.decorator';
+import { QueryUserDto, ShieldUserDto, UpdateUserDto } from './dto/user.dto';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  findAll(@Query() Query: any) {
-    return this.userService.findAll(Query);
+  findAll(@Query() query: QueryUserDto) {
+    return this.userService.getUserList(query);
   }
 
-  @Public()
-  @Post()
-  addUser(@Req() request: Request, @Body() addUserDto: AddUserDto) {
-    return this.userService.addUser(addUserDto, request.ip);
-  }
   @Put()
-  update() {}
+  update(@Body() body: UpdateUserDto) {
+    return this.userService.updateUser(body);
+  }
+
   @Delete()
-  remove() {}
+  shield(@Body() body: ShieldUserDto) {
+    return this.userService.shieldUser(body);
+  }
 }

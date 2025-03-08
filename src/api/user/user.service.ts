@@ -1,12 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import * as nanoid from 'nanoid';
 import * as bcrypt from 'bcrypt';
-import { AddUserDto } from './dto/user.dto';
 import { User } from './entities/user.entity';
 import userConfig from '@/config/user.config';
 import getIpAddress from '@/utils/ip-address';
+import {
+  QueryUserDto,
+  UpdateUserDto,
+  AddUserDto,
+  ShieldUserDto,
+} from './dto/user.dto';
 @Injectable()
 export class UserService {
   constructor(
@@ -14,13 +19,23 @@ export class UserService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async findAll(Query: any) {
-    const { email, id } = Query;
+  async findAll(query: { email?: string; id?: string }) {
+    const { email, id } = query;
     return await this.usersRepository.find({ where: { email, id } });
   }
 
-  findOne(email: string) {
-    return `This action returns a #${email} user`;
+  async getUserList({ page, pageSize, username, email }: QueryUserDto) {
+    const [userList, total] = await this.usersRepository.findAndCount({
+      where: {
+        username: username ? Like(`%${username}%`) : undefined,
+        email: email ? Like(`%${email}%`) : undefined,
+      },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+      order: { create_time: 'ASC' },
+    });
+    const usersWithoutPassword = userList.map(({ password, ...rest }) => rest);
+    return { userList: usersWithoutPassword, total };
   }
 
   async addUser(userInfo: AddUserDto, requestIp: string | undefined) {
@@ -28,12 +43,12 @@ export class UserService {
     const id = nanoid.customAlphabet('1234567890', 10)();
     const username = email.split('@')[0];
     const bcryptPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-    let ip_address = '';
-    let formatIp = '';
+    let formatIp = '未知';
+    let ip_address = '未知';
     if (requestIp) {
       const { ip, province } = await getIpAddress(requestIp);
       formatIp = ip;
-      ip_address = province ? province : '';
+      ip_address = province;
     }
     const userInfoData = {
       id,
@@ -46,5 +61,27 @@ export class UserService {
     };
     await this.usersRepository.save(userInfoData);
     return userInfoData;
+  }
+
+  async updateUser(body: UpdateUserDto) {
+    const { id } = body;
+    const user = await this.usersRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new BadRequestException('用户不存在');
+    }
+    Object.assign(user, { ...body, id: +id });
+    await this.usersRepository.save(user);
+    return;
+  }
+
+  async shieldUser(body: ShieldUserDto) {
+    const { id } = body;
+    const user = await this.usersRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new BadRequestException('用户不存在');
+    }
+    user.status = user.status === 1 ? 0 : 1;
+    await this.usersRepository.save(user);
+    return;
   }
 }

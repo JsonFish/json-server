@@ -17,7 +17,7 @@ export class User {
   @Column({ default: '' })
   password: string;
 
-  @Column()
+  @Column({ default: '-' })
   email: string;
 
   @Column({ default: 0 })
@@ -33,7 +33,7 @@ export class User {
   update_time: Date;
 
   @Column({ default: 0 })
-  status: string;
+  status: number;
 
   @Column()
   ip: string;
@@ -41,6 +41,6 @@ export class User {
   @Column()
   ip_address: string;
 
-  @Column()
+  @Column({ default: '' })
   github_id: string;
 }

@@ -18,7 +18,6 @@ import {
 @Controller('tag')
 export class TagController {
   constructor(private readonly tagService: TagService) {}
-
   @Get()
   findAll(@Query() query: QueryTagDto) {
     return this.tagService.getTag(query);

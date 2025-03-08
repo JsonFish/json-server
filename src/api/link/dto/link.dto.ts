@@ -1,55 +1,57 @@
 import {
   IsString,
   IsInt,
-  Min,
-  IsOptional,
   MaxLength,
   IsNotEmpty,
   IsArray,
+  IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-
 import { PaginationDto } from '@/common/dto/pagination.dto';
 
 export class CreateLinkDto {
-  @IsString()
   @MaxLength(20)
+  @IsString()
+  @IsNotEmpty()
   name: string;
 
-  @IsString()
   @MaxLength(255)
+  @IsString()
+  @IsNotEmpty()
   avatarUrl: string;
 
-  @IsString()
   @MaxLength(45)
+  @IsString()
+  @IsNotEmpty()
   description: string;
 
-  @IsString()
   @MaxLength(45)
+  @IsString()
+  @IsNotEmpty()
   url: string;
 }
 
 export class QueryLinkDto extends PaginationDto {
-  @Type(() => Number)
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
+  name?: string;
+
   @IsInt()
+  @Type(() => Number)
+  @IsNotEmpty()
   status: number;
 }
 
 export class ExamineLinkDto {
-  @IsNotEmpty()
   @IsInt()
+  @IsNotEmpty()
   id: number;
 }
 
-export class UpdateTagDto extends QueryLinkDto {
-  @IsNotEmpty()
-  @IsInt()
-  id: number;
-}
-
-export class DeleteTagsDto {
-  @IsNotEmpty()
-  @IsArray()
+export class DeleteLinksDto {
   @IsInt({ each: true })
+  @IsArray()
+  @IsNotEmpty()
   id: number[];
 }

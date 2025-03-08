@@ -9,9 +9,9 @@ import {
 import { PaginationDto } from '@/common/dto/pagination.dto';
 
 export class TagNameDto {
-  @IsNotEmpty()
-  @IsString()
   @MaxLength(10)
+  @IsString()
+  @IsNotEmpty()
   tagName: string;
 }
 
@@ -21,18 +21,18 @@ export class QueryTagDto extends PaginationDto {
   @IsOptional()
   @IsString()
   @MaxLength(10)
-  tagName: string;
+  tagName?: string;
 }
 
 export class UpdateTagDto extends TagNameDto {
-  @IsNotEmpty()
   @IsInt()
+  @IsNotEmpty()
   id: number;
 }
 
 export class DeleteTagsDto {
-  @IsNotEmpty()
-  @IsArray()
   @IsInt({ each: true })
+  @IsArray()
+  @IsNotEmpty()
   id: number[];
 }
