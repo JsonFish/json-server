@@ -22,19 +22,21 @@ export interface RequestType extends Request {
     id: string;
   };
 }
+import { Public } from '@/core/guard/public.decorator';
 
 @Controller('link')
 export class LinkController {
   constructor(private readonly linkService: LinkService) {}
 
   @Get()
-  findAll(@Query() query: QueryLinkDto, @Req() request: Request) {
+  findAll(@Query() query: QueryLinkDto) {
     return this.linkService.findAll(query);
   }
 
+  @Public()
   @Post()
   create(@Body() link: CreateLinkDto, @Req() request: RequestType) {
-    return this.linkService.applyFor(link, request.user.id);
+    return this.linkService.applyFor(link, request?.user?.id);
   }
 
   @Post('agree')

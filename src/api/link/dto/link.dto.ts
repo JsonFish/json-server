@@ -18,7 +18,7 @@ export class CreateLinkDto {
   @MaxLength(255)
   @IsString()
   @IsNotEmpty()
-  avatarUrl: string;
+  avatar_url: string;
 
   @MaxLength(45)
   @IsString()

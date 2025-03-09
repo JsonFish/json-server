@@ -13,7 +13,9 @@ export class TagService {
 
   async getTag({ page, pageSize, tagName }: QueryTagDto) {
     const [tagList, total] = await this.tagRepository.findAndCount({
-      where: { tagName: Like(`%${tagName}%`) },
+      where: {
+        tagName: tagName ? Like(`%${tagName}%`) : undefined,
+      },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });

@@ -13,7 +13,11 @@ export class LinkService {
   async findAll(query: QueryLinkDto) {
     const { page, pageSize, status, name } = query;
     const [linkList, total] = await this.linkRepository.findAndCount({
-      where: { name: Like(`%${name}%`), status, is_deleted: 0 },
+      where: {
+        name: name ? Like(`%${name}%`) : undefined,
+        status,
+        is_deleted: 0,
+      },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
@@ -21,6 +25,7 @@ export class LinkService {
   }
 
   async applyFor(linkData: CreateLinkDto, userId: string) {
+    if (!userId) throw new BadRequestException('请登录后再做尝试');
     const link = await this.linkRepository.findOne({
       where: { user_id: userId, is_deleted: 0 },
     });
