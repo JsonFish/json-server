@@ -9,15 +9,13 @@ export interface IpData {
 
 async function getIpAddress(ip: string): Promise<IpData> {
   ip = ip?.replace(/^.*:/, '');
-  const ipData = await axios.get(`http://ip-api.com/json/${ip}?lang=zh-CN`);
-  if (ipData.data.status !== 'success') {
-    return { ip, country: '未知', province: '未知', city: '未知' };
-  }
+  const response = await axios.get(`http://ip-api.com/json/${ip}?lang=zh-CN`);
+  const success = response.data.status === 'success';
   return {
     ip,
-    country: ipData.data.country,
-    province: ipData.data.regionName.slice(0, -1),
-    city: ipData.data.city,
+    country: success ? response.data.country : '未知',
+    province: success ? response.data.regionName.slice(0, -1) : '未知',
+    city: success ? response.data.city : '未知',
   };
 }
 
