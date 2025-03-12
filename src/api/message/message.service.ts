@@ -15,9 +15,10 @@ export class MessageService {
   }
 
   async findAll(query: QueryMessageDto) {
-    const { page, pageSize } = query;
+    const { page, pageSize, status } = query;
     const [messageList, total] = await this.messsageRepository.findAndCount({
-      cache: false, // 禁用缓存
+      where: { status },
+      relations: ['userInfo'],
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
