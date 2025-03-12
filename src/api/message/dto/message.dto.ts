@@ -9,3 +9,5 @@ import {
 import { PaginationDto } from '@/common/dto/pagination.dto';
 
 export class QueryMessageDto extends PaginationDto {}
+
+export class createMessageDto {}

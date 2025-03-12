@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { User } from 'src/api/user/entities/user.entity';
 
@@ -12,11 +13,12 @@ export class Message {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.id)
-  user: User;
-
   @Column()
   text: string;
+
+  @ManyToOne(() => User, (user) => user.id)
+  @JoinColumn({ name: 'user_id' })
+  userInfo: User;
 
   @CreateDateColumn({ type: 'timestamp' })
   create_time: Date;
