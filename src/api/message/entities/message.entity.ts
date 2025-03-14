@@ -20,8 +20,8 @@ export class Message {
   @JoinColumn({ name: 'user_id' })
   userInfo: User;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  create_time: Date;
+  @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
+  createTime: Date;
 
   @Column({ default: 0 })
   status: number;
