@@ -4,7 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { User } from 'src/api/user/entities/user.entity';
 
 @Entity('friend_link')
 export class Link {
@@ -15,19 +18,20 @@ export class Link {
   name: string;
 
   @Column()
-  avatar_url: string;
+  avatar: string;
 
   @Column()
   description: string;
 
   @Column()
-  url: string;
+  link: string;
+
+  @ManyToOne(() => User, (user) => user.id)
+  @JoinColumn({ name: 'user_id' })
+  userInfo: User;
 
   @Column()
-  user_id: string;
-
-  @Column()
-  email: number;
+  user_id: number;
 
   @CreateDateColumn({ type: 'timestamp' })
   create_time: Date;

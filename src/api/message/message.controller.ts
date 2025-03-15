@@ -19,20 +19,11 @@ export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
   @Get()
-  async findAll(@Query() query: QueryMessageDto, @Req() request: Request) {
+  findAll(@Query() query: QueryMessageDto, @Req() request: Request) {
     const ip = request.ip;
     const userAgent = request.headers['user-agent'];
     getAgentData(userAgent ? userAgent : '');
-    const { messageList, total } = await this.messageService.findAll(query);
-    const formatList = messageList.map((item) => {
-      item.userInfo = {
-        username: item?.userInfo?.username,
-        avatar: item?.userInfo?.avatar,
-        email: item?.userInfo?.email,
-      } as any;
-      return item;
-    });
-    return { messageList: formatList, total };
+    return this.messageService.findAll(query);
   }
 
   @Post()

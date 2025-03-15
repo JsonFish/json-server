@@ -25,4 +25,19 @@ export class Message {
 
   @Column({ default: 0 })
   status: number;
+
+  @Column({ name: 'browser_name' })
+  browserName: string;
+
+  @Column({ name: 'browser_version' })
+  browserVersion: string;
+
+  @Column({ name: 'os_name' })
+  osName: string;
+
+  @Column({ name: 'os_version' })
+  osVersion: string;
+
+  @Column({ name: 'ip_address' })
+  ipAddtess: string;
 }

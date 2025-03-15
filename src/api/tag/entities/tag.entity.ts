@@ -11,7 +11,7 @@ export class Tag {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ name: 'tag_name' })
   tagName: string;
 
   @CreateDateColumn({ type: 'timestamp' })

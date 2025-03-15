@@ -10,9 +10,6 @@ export class MessageService {
     @InjectRepository(Message)
     private readonly messsageRepository: Repository<Message>,
   ) {}
-  create(createMessageDto: any) {
-    return 'This action adds a new message';
-  }
 
   async findAll(query: QueryMessageDto) {
     const { page, pageSize, status } = query;
@@ -21,12 +18,22 @@ export class MessageService {
       relations: ['userInfo'],
       skip: (page - 1) * pageSize,
       take: pageSize,
+      order: { createTime: 'DESC' },
     });
-    return { messageList, total };
+    const formatList = messageList.map((item) => {
+      item = {
+        ...item,
+        username: item.userInfo.username,
+        avatar: item.userInfo.avatar,
+        email: item.userInfo.email,
+      } as any;
+      return item;
+    });
+    return { messageList: formatList, total };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} message`;
+  create(createMessageDto: any) {
+    return 'This action adds a new message';
   }
 
   update(id: number, updateMessageDto: any) {

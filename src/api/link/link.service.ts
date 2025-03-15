@@ -13,6 +13,7 @@ export class LinkService {
   async findAll(query: QueryLinkDto) {
     const { page, pageSize, status, name } = query;
     const [linkList, total] = await this.linkRepository.findAndCount({
+      relations: ['userInfo'],
       where: {
         name: name ? Like(`%${name}%`) : undefined,
         status,
@@ -21,11 +22,20 @@ export class LinkService {
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
-    return { linkList, total };
+    const formatList = linkList.map((item) => {
+      const { userInfo, ...rest } = item;
+      return {
+        ...rest,
+        email: userInfo.email,
+        userAvatar: userInfo.avatar,
+        username: userInfo.username,
+      };
+    });
+    return { linkList: formatList, total };
   }
 
-  async applyFor(linkData: CreateLinkDto, userId: string) {
-    if (!userId) throw new BadRequestException('请登录后再做尝试');
+  async applyFor(linkData: CreateLinkDto, userId: number) {
+    if (!userId) throw new BadRequestException('登录后才能申请哦');
     const link = await this.linkRepository.findOne({
       where: { user_id: userId, is_deleted: 0 },
     });

@@ -19,7 +19,7 @@ import {
 } from './dto/link.dto';
 export interface RequestType extends Request {
   user: {
-    id: string;
+    id: number;
   };
 }
 import { Public } from '@/core/guard/public.decorator';

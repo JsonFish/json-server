@@ -18,7 +18,7 @@ export class CreateLinkDto {
   @MaxLength(255)
   @IsString()
   @IsNotEmpty()
-  avatar_url: string;
+  avatar: string;
 
   @MaxLength(45)
   @IsString()
@@ -28,7 +28,7 @@ export class CreateLinkDto {
   @MaxLength(45)
   @IsString()
   @IsNotEmpty()
-  url: string;
+  link: string;
 }
 
 export class QueryLinkDto extends PaginationDto {
