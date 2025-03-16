@@ -38,6 +38,9 @@ export class Message {
   @Column({ name: 'os_version' })
   osVersion: string;
 
+  @Column()
+  ip: string;
+
   @Column({ name: 'ip_address' })
-  ipAddtess: string;
+  ipAddress: string;
 }

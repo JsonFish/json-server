@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { APP_FILTER, APP_INTERCEPTOR, APP_GUARD } from '@nestjs/core';
 import { UserModule } from './api/user/user.module';
 import { TagModule } from './api/tag/tag.module';
-import { CategoryModule } from './api/category/category.module';
 import { LinkModule } from './api/link/link.module';
 import { AuthModule } from './api/auth/auth.module';
 import { MessageModule } from './api/message/message.module';
@@ -16,7 +15,6 @@ import { AuthGuard } from './core/guard/auth.guard';
     TypeOrmModule.forRoot(mysqlConfig),
     UserModule,
     TagModule,
-    CategoryModule,
     LinkModule,
     AuthModule,
     MessageModule,

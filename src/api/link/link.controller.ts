@@ -16,13 +16,13 @@ import {
   CreateLinkDto,
   ExamineLinkDto,
   DeleteLinksDto,
+  UpdateLinkDto,
 } from './dto/link.dto';
 export interface RequestType extends Request {
   user: {
     id: number;
   };
 }
-import { Public } from '@/core/guard/public.decorator';
 
 @Controller('link')
 export class LinkController {
@@ -33,10 +33,9 @@ export class LinkController {
     return this.linkService.findAll(query);
   }
 
-  @Public()
   @Post()
   create(@Body() link: CreateLinkDto, @Req() request: RequestType) {
-    return this.linkService.applyFor(link, request?.user?.id);
+    return this.linkService.applyFor(link, request.user.id);
   }
 
   @Post('agree')
@@ -45,8 +44,8 @@ export class LinkController {
   }
 
   @Put()
-  update(@Param('id') id: string, @Body() link: any) {
-    return this.linkService.update(+id, link);
+  update(@Body() link: UpdateLinkDto) {
+    return this.linkService.update(link);
   }
 
   @Delete()

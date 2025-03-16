@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Repository, Like } from 'typeorm';
+import { Repository } from 'typeorm';
 import { QueryMessageDto } from './dto/message.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Message } from './entities/message.entity';
@@ -21,13 +21,13 @@ export class MessageService {
       order: { createTime: 'DESC' },
     });
     const formatList = messageList.map((item) => {
-      item = {
-        ...item,
-        username: item.userInfo.username,
-        avatar: item.userInfo.avatar,
-        email: item.userInfo.email,
-      } as any;
-      return item;
+      const { userInfo, ...rest } = item;
+      return {
+        ...rest,
+        username: userInfo.username,
+        avatar: userInfo.avatar,
+        email: userInfo.email,
+      };
     });
     return { messageList: formatList, total };
   }

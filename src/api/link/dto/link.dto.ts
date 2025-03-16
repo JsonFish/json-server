@@ -31,6 +31,12 @@ export class CreateLinkDto {
   link: string;
 }
 
+export class UpdateLinkDto extends CreateLinkDto {
+  @IsInt()
+  @IsNotEmpty()
+  id: number;
+}
+
 export class QueryLinkDto extends PaginationDto {
   @IsOptional()
   @IsString()

@@ -9,7 +9,7 @@ import {
 import { PaginationDto } from '@/common/dto/pagination.dto';
 
 export class TagNameDto {
-  @MaxLength(10)
+  @MaxLength(20)
   @IsString()
   @IsNotEmpty()
   tagName: string;
@@ -20,7 +20,7 @@ export class CreateTagDto extends TagNameDto {}
 export class QueryTagDto extends PaginationDto {
   @IsOptional()
   @IsString()
-  @MaxLength(10)
+  @MaxLength(20)
   tagName?: string;
 }
 

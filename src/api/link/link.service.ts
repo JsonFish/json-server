@@ -2,7 +2,12 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository, Like } from 'typeorm';
 import { Link } from './entities/link.entity';
-import { QueryLinkDto, CreateLinkDto, ExamineLinkDto } from './dto/link.dto';
+import {
+  QueryLinkDto,
+  CreateLinkDto,
+  ExamineLinkDto,
+  UpdateLinkDto,
+} from './dto/link.dto';
 @Injectable()
 export class LinkService {
   constructor(
@@ -57,7 +62,8 @@ export class LinkService {
     return;
   }
 
-  async update(id: number, link: Link): Promise<void> {
+  async update(link: UpdateLinkDto): Promise<void> {
+    const { id } = link;
     await this.linkRepository.update(id, link);
   }
 
