@@ -6,6 +6,7 @@ import { TagModule } from './api/tag/tag.module';
 import { LinkModule } from './api/link/link.module';
 import { AuthModule } from './api/auth/auth.module';
 import { MessageModule } from './api/message/message.module';
+import { ArticleModule } from './api/article/article.module';
 import mysqlConfig from './config/mysql.config';
 import { AllExceptionFilter } from './core/filter/all-exception.filter';
 import { TransformInterceptor } from './core/interceptor/transform.interceptor';
@@ -18,6 +19,7 @@ import { AuthGuard } from './core/guard/auth.guard';
     LinkModule,
     AuthModule,
     MessageModule,
+    ArticleModule,
   ],
   controllers: [],
   providers: [

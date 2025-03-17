@@ -1,20 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { ArticleService } from './article.service';
-import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
+import { CreateArticleDto, QueryArticleFto } from './dto/article.dto';
 
 @Controller('article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
+  @Get()
+  findAll(@Query() query: QueryArticleFto) {
+    return this.articleService.findAll(query);
+  }
+
   @Post()
   create(@Body() createArticleDto: CreateArticleDto) {
     return this.articleService.create(createArticleDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.articleService.findAll();
   }
 
   @Get(':id')
@@ -23,7 +31,7 @@ export class ArticleController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
+  update(@Param('id') id: string, @Body() updateArticleDto: any) {
     return this.articleService.update(+id, updateArticleDto);
   }
 
