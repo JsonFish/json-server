@@ -25,11 +25,6 @@ export class ArticleController {
     return this.articleService.create(createArticleDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.articleService.findOne(+id);
-  }
-
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateArticleDto: any) {
     return this.articleService.update(+id, updateArticleDto);
