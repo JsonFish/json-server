@@ -11,10 +11,6 @@ export class ArticleService {
     private readonly articleRepository: Repository<Article>,
   ) {}
 
-  create(createArticleDto: CreateArticleDto) {
-    return 'This action adds a new article';
-  }
-
   async findAll(query: QueryArticleFto) {
     const { page, pageSize } = query;
     const [articleList, total] = await this.articleRepository.findAndCount({
@@ -24,8 +20,8 @@ export class ArticleService {
     return { articleList, total };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} article`;
+  create(createArticleDto: CreateArticleDto) {
+    return 'This action adds a new article';
   }
 
   update(id: number, updateArticleDto: any) {
