@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { QueryMessageDto } from './dto/message.dto';
+import { QueryMessageDto, createMessageDto } from './dto/message.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Message } from './entities/message.entity';
 
@@ -32,9 +32,7 @@ export class MessageService {
     return { messageList: formatList, total };
   }
 
-  create(createMessageDto: any) {
-    return 'This action adds a new message';
-  }
+  create(createMessageDto: createMessageDto) {}
 
   update(id: number, updateMessageDto: any) {
     return `This action updates a #${id} message`;

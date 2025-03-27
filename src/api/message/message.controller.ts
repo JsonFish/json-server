@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { MessageService } from './message.service';
-import { QueryMessageDto } from './dto/message.dto';
+import { QueryMessageDto, createMessageDto } from './dto/message.dto';
 import getAgentData from '@/utils/user-agent';
 
 @Controller('message')
@@ -19,15 +19,15 @@ export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
   @Get()
-  findAll(@Query() query: QueryMessageDto, @Req() request: Request) {
-    const ip = request.ip;
-    const userAgent = request.headers['user-agent'];
-    getAgentData(userAgent ? userAgent : '');
+  findAll(@Query() query: QueryMessageDto) {
     return this.messageService.findAll(query);
   }
 
   @Post()
-  create(@Body() createMessageDto: any, @Req() request: Request) {
+  create(@Body() createMessageDto: createMessageDto, @Req() request: Request) {
+    const ip = request.ip;
+    const userAgent = request.headers['user-agent'];
+    const data = getAgentData(userAgent ? userAgent : '');
     return this.messageService.create(createMessageDto);
   }
 

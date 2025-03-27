@@ -16,4 +16,14 @@ export class QueryMessageDto extends PaginationDto {
   status: number;
 }
 
-export class createMessageDto {}
+export class createMessageDto {
+  @IsString()
+  @MaxLength(255)
+  @IsNotEmpty()
+  text: string;
+
+  @IsString()
+  @MaxLength(45)
+  @IsNotEmpty()
+  borwserName: string;
+}
