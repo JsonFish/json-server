@@ -23,6 +23,9 @@ export class Article {
   @Column()
   views: number;
 
+  @Column({ name: 'is_top' })
+  isTop: number;
+
   @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 
