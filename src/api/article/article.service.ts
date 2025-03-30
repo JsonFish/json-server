@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { CreateArticleDto, QueryArticleFto } from './dto/article.dto';
 
 import { Article } from './entities/article.entity';
@@ -12,8 +12,13 @@ export class ArticleService {
   ) {}
 
   async findAll(query: QueryArticleFto) {
-    const { page, pageSize } = query;
+    const { page, pageSize, status, title } = query;
     const [articleList, total] = await this.articleRepository.findAndCount({
+      where: {
+        title: title ? Like(`%${title}%`) : undefined,
+        status,
+        is_deleted: 0,
+      },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
