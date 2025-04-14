@@ -13,7 +13,7 @@ export class ArticleService {
 
   async findAll(query: QueryArticleFto) {
     const { page, pageSize, status, title } = query;
-    const [articleList, total] = await this.articleRepository.findAndCount({
+    let [articleList, total] = await this.articleRepository.findAndCount({
       where: {
         title: title ? Like(`%${title}%`) : undefined,
         status,
@@ -21,6 +21,10 @@ export class ArticleService {
       },
       skip: (page - 1) * pageSize,
       take: pageSize,
+    });
+    articleList = articleList.map((i) => {
+      const tagidList = i.tagIds.split(',');
+      return { ...i, tagidList };
     });
     return { articleList, total };
   }

@@ -26,6 +26,9 @@ export class Article {
   @Column({ name: 'is_top' })
   isTop: number;
 
+  @Column({ name: 'tagIds' })
+  tagIds: string;
+
   @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
   createTime: Date;
 
