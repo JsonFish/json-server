@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, In } from 'typeorm';
 import { CreateArticleDto, QueryArticleFto } from './dto/article.dto';
-
 import { Article } from './entities/article.entity';
+import { Tag } from '@/api/tag/entities/tag.entity';
+
 @Injectable()
 export class ArticleService {
   constructor(
     @InjectRepository(Article)
     private readonly articleRepository: Repository<Article>,
+    @InjectRepository(Tag)
+    private readonly tagRepository: Repository<Tag>,
   ) {}
 
   async findAll(query: QueryArticleFto) {
@@ -22,10 +25,19 @@ export class ArticleService {
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
-    articleList = articleList.map((i) => {
-      const tagidList = i.tagIds.split(',');
-      return { ...i, tagidList };
-    });
+
+    articleList = await Promise.all(
+      articleList.map(async (i) => {
+        let tags: any;
+        if (i.tagIds) {
+          tags = await this.tagRepository.findBy({
+            id: In(i.tagIds.split(',')),
+          });
+        }
+        return { ...i, tags };
+      }),
+    );
+
     return { articleList, total };
   }
 

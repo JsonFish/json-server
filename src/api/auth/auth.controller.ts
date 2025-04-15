@@ -33,7 +33,7 @@ export class AuthController {
   @Public()
   @Post('login')
   login(@Body() loginDto: LoginDto, @Session() session: Record<string, any>) {
-    if (loginDto.code != session.captchaCode) {
+    if (loginDto.code !== session.captchaCode) {
       throw new BadRequestException('验证码错误');
     }
     return this.authService.login(loginDto);
