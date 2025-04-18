@@ -7,6 +7,7 @@ import { LinkModule } from './api/link/link.module';
 import { AuthModule } from './api/auth/auth.module';
 import { MessageModule } from './api/message/message.module';
 import { ArticleModule } from './api/article/article.module';
+import { InfoModule } from './api/info/info.module';
 import mysqlConfig from './config/mysql.config';
 import { AllExceptionFilter } from './core/filter/all-exception.filter';
 import { TransformInterceptor } from './core/interceptor/transform.interceptor';
@@ -20,6 +21,7 @@ import { AuthGuard } from './core/guard/auth.guard';
     AuthModule,
     MessageModule,
     ArticleModule,
+    InfoModule,
   ],
   controllers: [],
   providers: [

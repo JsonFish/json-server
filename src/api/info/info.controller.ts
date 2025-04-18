@@ -8,6 +8,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { InfoService } from './info.service';
+import { Public } from '@/core/guard/public.decorator';
 
 @Controller('info')
 export class InfoController {
@@ -18,6 +19,7 @@ export class InfoController {
     return this.infoService.create(createInfoDto);
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.infoService.findAll();
