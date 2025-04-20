@@ -1,13 +1,18 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Information } from './entities/info.entity';
 
 @Injectable()
 export class InfoService {
-  create(createInfoDto: any) {
-    return 'This action adds a new info';
-  }
+  constructor(
+    @InjectRepository(Information)
+    private readonly informationRepository: Repository<Information>,
+  ) {}
 
-  findAll() {
-    return `This action returns all info`;
+  async findAll() {
+    const infoData = await this.informationRepository.find();
+    return infoData[0];
   }
 
   findOne(id: number) {

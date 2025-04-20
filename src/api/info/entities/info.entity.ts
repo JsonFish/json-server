@@ -1,8 +1,8 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('information')
 export class Information {
-  @Column({ name: 'blog_name' })
+  @PrimaryGeneratedColumn({ name: 'blog_name' })
   blogName: string;
 
   @Column({ name: 'blog_avatar' })
@@ -19,4 +19,7 @@ export class Information {
 
   @Column({ name: 'csdn_link' })
   csdnLink: string;
+
+  @Column({ name: 'bilibili_link' })
+  bilibiliLink: string;
 }

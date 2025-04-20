@@ -1,23 +1,10 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
 import { InfoService } from './info.service';
 import { Public } from '@/core/guard/public.decorator';
 
 @Controller('info')
 export class InfoController {
   constructor(private readonly infoService: InfoService) {}
-
-  @Post()
-  create(@Body() createInfoDto: any) {
-    return this.infoService.create(createInfoDto);
-  }
 
   @Public()
   @Get()

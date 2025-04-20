@@ -10,11 +10,12 @@ import {
 } from '@nestjs/common';
 import { ArticleService } from './article.service';
 import { CreateArticleDto, QueryArticleFto } from './dto/article.dto';
+import { Public } from '@/core/guard/public.decorator';
 
 @Controller('article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
-
+  @Public()
   @Get()
   findAll(@Query() query: QueryArticleFto) {
     return this.articleService.findAll(query);
