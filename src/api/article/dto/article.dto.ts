@@ -1,10 +1,4 @@
-import {
-  IsString,
-  MaxLength,
-  IsNotEmpty,
-  IsInt,
-  IsEmpty,
-} from 'class-validator';
+import { IsString, MaxLength, IsInt } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PaginationDto } from '@/common/dto/pagination.dto';
 

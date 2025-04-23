@@ -41,6 +41,10 @@ export class ArticleService {
     return { articleList, total };
   }
 
+  findOne(id: number) {
+    return 'id :' + id;
+  }
+
   create(createArticleDto: CreateArticleDto) {
     return 'This action adds a new article';
   }
