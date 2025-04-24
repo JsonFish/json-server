@@ -11,21 +11,19 @@ import {
 } from '@nestjs/common';
 import { Public } from '@/core/guard/public.decorator';
 import { ArticleService } from './article.service';
-import { CreateArticleDto, QueryArticleFto } from './dto/article.dto';
+import {
+  CreateArticleDto,
+  QueryArticleDto,
+  DeleteArticleDto,
+} from './dto/article.dto';
 
 @Controller('article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
   @Public()
-  @Get('all')
-  findAll(@Query() query: QueryArticleFto) {
-    return this.articleService.findAll(query);
-  }
-
-  @Public()
   @Get()
-  findOne(@Query('id', ParseIntPipe) id: number) {
-    return this.articleService.findOne(id);
+  findAll(@Query() query: QueryArticleDto) {
+    return this.articleService.findAll(query);
   }
 
   @Post()
@@ -38,8 +36,8 @@ export class ArticleController {
     return this.articleService.update(+id, updateArticleDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.articleService.remove(+id);
+  @Delete()
+  remove(@Body() data: DeleteArticleDto) {
+    return this.articleService.remove(data.id);
   }
 }

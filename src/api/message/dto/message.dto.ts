@@ -13,7 +13,7 @@ export class QueryMessageDto extends PaginationDto {
   @IsInt()
   @Type(() => Number)
   @IsNotEmpty()
-  status: number;
+  status: number = 1;
 }
 
 export class createMessageDto {
@@ -21,9 +21,4 @@ export class createMessageDto {
   @MaxLength(255)
   @IsNotEmpty()
   text: string;
-
-  @IsString()
-  @MaxLength(45)
-  @IsNotEmpty()
-  borwserName: string;
 }

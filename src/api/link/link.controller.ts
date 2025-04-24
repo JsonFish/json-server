@@ -18,6 +18,8 @@ import {
   DeleteLinksDto,
   UpdateLinkDto,
 } from './dto/link.dto';
+import { Public } from '@/core/guard/public.decorator';
+
 export interface RequestType extends Request {
   user: {
     id: number;
@@ -27,7 +29,7 @@ export interface RequestType extends Request {
 @Controller('link')
 export class LinkController {
   constructor(private readonly linkService: LinkService) {}
-
+  @Public()
   @Get()
   findAll(@Query() query: QueryLinkDto) {
     return this.linkService.findAll(query);

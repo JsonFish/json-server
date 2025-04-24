@@ -46,7 +46,7 @@ export class QueryLinkDto extends PaginationDto {
   @IsInt()
   @Type(() => Number)
   @IsNotEmpty()
-  status: number;
+  status: number = 1;
 }
 
 export class ExamineLinkDto {

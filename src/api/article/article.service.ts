@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, In } from 'typeorm';
-import { CreateArticleDto, QueryArticleFto } from './dto/article.dto';
+import { CreateArticleDto, QueryArticleDto } from './dto/article.dto';
 import { Article } from './entities/article.entity';
 import { Tag } from '@/api/tag/entities/tag.entity';
 
@@ -14,8 +14,20 @@ export class ArticleService {
     private readonly tagRepository: Repository<Tag>,
   ) {}
 
-  async findAll(query: QueryArticleFto) {
-    const { page, pageSize, status, title } = query;
+  async findAll(query: QueryArticleDto) {
+    const { page, pageSize, status, title, id } = query;
+    if (id) {
+      const article = await this.articleRepository.findOne({
+        where: { id, is_deleted: 0 },
+      });
+      let tags: any = [];
+      if (article?.tagIds) {
+        tags = await this.tagRepository.findBy({
+          id: In(article.tagIds.split(',')),
+        });
+      }
+      return { ...article, tags };
+    }
     let [articleList, total] = await this.articleRepository.findAndCount({
       where: {
         title: title ? Like(`%${title}%`) : undefined,
@@ -41,10 +53,6 @@ export class ArticleService {
     return { articleList, total };
   }
 
-  findOne(id: number) {
-    return 'id :' + id;
-  }
-
   create(createArticleDto: CreateArticleDto) {
     return 'This action adds a new article';
   }
@@ -53,7 +61,11 @@ export class ArticleService {
     return `This action updates a #${id} article`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} article`;
+  async remove(id: number) {
+    const result = await this.articleRepository.update(id, { is_deleted: 1 });
+    if (result.affected === 0) {
+      throw new BadRequestException('删除失败');
+    }
+    return;
   }
 }

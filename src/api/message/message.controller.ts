@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Query,
   Delete,
@@ -13,27 +13,42 @@ import { Request } from 'express';
 import { MessageService } from './message.service';
 import { QueryMessageDto, createMessageDto } from './dto/message.dto';
 import getAgentData from '@/utils/user-agent';
+import { Public } from '@/core/guard/public.decorator';
+import getIpAddress from '@/utils/ip-address';
+export interface AuthorizedRequest extends Request {
+  user: {
+    id: string;
+    email: string;
+    username: string;
+  };
+}
 
 @Controller('message')
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
 
+  @Public()
   @Get()
   findAll(@Query() query: QueryMessageDto) {
     return this.messageService.findAll(query);
   }
 
   @Post()
-  create(@Body() createMessageDto: createMessageDto, @Req() request: Request) {
-    const ip = request.ip;
+  async create(
+    @Body() createMessageDto: createMessageDto,
+    @Req() request: AuthorizedRequest,
+  ) {
     const userAgent = request.headers['user-agent'];
-    const data = getAgentData(userAgent ? userAgent : '');
-    return this.messageService.create(createMessageDto);
+    const agentData = getAgentData(userAgent ? userAgent : '');
+    const requestIp = request.ip;
+    const ipData = await getIpAddress(requestIp);
+    const { id } = request.user;
+    return this.messageService.create(createMessageDto, agentData, ipData, +id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMessageDto: any) {
-    return this.messageService.update(+id, updateMessageDto);
+  @Put()
+  approval(@Query('id') id: string) {
+    return this.messageService.approval(+id);
   }
 
   @Delete(':id')
