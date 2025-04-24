@@ -43,13 +43,10 @@ export class UserService {
     const id = nanoid.customAlphabet('1234567890', 10)();
     const username = email.split('@')[0];
     const bcryptPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-    let formatIp = '未知';
-    let ip_address = '未知';
-    if (requestIp) {
-      const { ip, province } = await getIpAddress(requestIp);
-      formatIp = ip;
-      ip_address = province;
-    }
+    const { ip, province } = await getIpAddress(requestIp);
+    const formatIp = ip;
+    const ip_address = province;
+
     const userInfoData = {
       id,
       username,
