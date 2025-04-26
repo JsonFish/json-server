@@ -22,9 +22,17 @@ async function getIpAddress(ip: string | undefined): Promise<IpData> {
   return {
     ip,
     country: success ? response.data.country : '-',
-    province: success ? response.data.regionName.slice(0, -1) : '-',
-    city: success ? response.data.city : '-',
+    province: success ? removeCitySuffix(response.data.regionName) : '-',
+    city: success ? removeCitySuffix(response.data.city) : '-',
   };
+}
+
+function removeCitySuffix(str: string) {
+  if (str.endsWith('市')) {
+    return str.slice(0, -1);
+  } else {
+    return str;
+  }
 }
 
 export default getIpAddress;
