@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
 import { ValidationPipe } from '@nestjs/common';
@@ -6,7 +7,7 @@ import { HttpExceptionFilter } from '@/core/filter/http-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.use(
     session({
       secret: 'xiaoyu',
@@ -15,7 +16,7 @@ async function bootstrap() {
       cookie: { maxAge: 99999 },
     }),
   );
-
+  app.enable('trust proxy');
   app.useGlobalFilters(new HttpExceptionFilter()); // 全局异常过滤器
 
   app.useGlobalPipes(
@@ -25,7 +26,6 @@ async function bootstrap() {
       stopAtFirstError: true, // 在第一个错误时停止验证
     }),
   );
-
   const config = new DocumentBuilder()
     .setTitle('接口文档')
     .setDescription('Json 博客接口文档')
