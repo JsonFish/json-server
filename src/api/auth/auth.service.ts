@@ -106,6 +106,7 @@ export class AuthService {
   async loginByGithub(body: { code: string }, ip: string | undefined) {
     const { code } = body;
     if (!code) throw new BadRequestException('登录失败，请稍后再试');
+    // 获取access_token
     const response = await axios.post(
       'https://github.com/login/oauth/access_token',
       {
@@ -113,22 +114,23 @@ export class AuthService {
         client_secret: githubConfig.client_secret,
         code,
       },
+      {
+        headers: {
+          Accept: 'application/json',
+        },
+      },
     );
     if (response?.data?.access_token) {
-      const userInfo = await axios.post(
-        'https://api.github.com/user',
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${response?.data?.access_token}`,
-          },
+      const userInfo = await axios.get('https://api.github.com/user', {
+        headers: {
+          Authorization: `Bearer ${response?.data?.access_token}`,
         },
-      );
+      });
       if (userInfo.data.id) {
         const ipData = await getIpAddress(ip);
         const githubUserInfo = {
           avatar: userInfo.data.avatar_url,
-          username: userInfo.data.login,
+          username: userInfo.data.name,
           email: userInfo.data.email,
           ip: ipData.ip,
           ipAddress: ipData.province,
