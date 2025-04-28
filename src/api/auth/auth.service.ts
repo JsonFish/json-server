@@ -142,13 +142,14 @@ export class AuthService {
         if (resutl.length !== 0) {
           const id = resutl[0].id;
           const role = resutl[0].role;
+          const avatar = resutl[0].avatar;
           await this.UserService.updateUser({ ...githubUserInfo, id, role });
           const { accessToken, refreshToken } = await this.generateToken(
             id,
             resutl[0].username,
           );
           return {
-            id,
+            avatar,
             username: resutl[0].username,
             accessToken,
             refreshToken,
@@ -161,7 +162,7 @@ export class AuthService {
             githubUserInfo.username,
           );
           return {
-            id,
+            avatar: githubUserInfo.avatar,
             username: githubUserInfo.username,
             accessToken,
             refreshToken,
