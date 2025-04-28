@@ -54,6 +54,15 @@ export class UpdateUserDto extends EmailDto {
   @IsString()
   @IsNotEmpty()
   avatar: string;
+
+  @IsString()
+  ip: string;
+
+  @IsString()
+  ipAddress: string;
+
+  @IsString()
+  githubId: string;
 }
 
 export class ShieldUserDto {

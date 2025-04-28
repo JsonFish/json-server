@@ -19,9 +19,11 @@ export class UserService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async findAll(query: { email?: string; id?: string }) {
-    const { email, id } = query;
-    return await this.usersRepository.find({ where: { email, id } });
+  async findAll(query: { email?: string; id?: string; githubId?: string }) {
+    const { email, id, githubId } = query;
+    return await this.usersRepository.find({
+      where: { email, id, githubId },
+    });
   }
 
   async getUserList({ page, pageSize, username, email }: QueryUserDto) {
@@ -58,6 +60,11 @@ export class UserService {
     };
     await this.usersRepository.save(userInfoData);
     return userInfoData;
+  }
+
+  async addUserByGithub(userInfo: any) {
+    await this.usersRepository.save(userInfo);
+    return;
   }
 
   async updateUser(body: UpdateUserDto) {

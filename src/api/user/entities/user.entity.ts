@@ -38,9 +38,9 @@ export class User {
   @Column()
   ip: string;
 
-  @Column()
-  ip_address: string;
+  @Column({ name: 'ip_address' })
+  ipAddress: string;
 
-  @Column({ default: '' })
-  github_id: string;
+  @Column({ name: 'github_id', default: '' })
+  githubId: string;
 }

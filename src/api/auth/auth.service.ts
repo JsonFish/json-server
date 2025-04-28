@@ -15,6 +15,7 @@ import { AuthorizedRequest } from './auth.controller';
 import emailConfig, { mailOptions } from '@/config/email.config';
 import { EmailCode } from './entities/email-code.entity';
 import githubConfig from '@/config/github.config';
+import getIpAddress from '@/utils/ip-address';
 
 @Injectable()
 export class AuthService {
@@ -102,7 +103,7 @@ export class AuthService {
     return await this.generateToken(id, username);
   }
 
-  async loginByGithub(body: any) {
+  async loginByGithub(body: { code: string }, ip: string | undefined) {
     const { code } = body;
     if (!code) throw new BadRequestException('登录失败，请稍后再试');
     const response = await axios.post(
@@ -114,6 +115,61 @@ export class AuthService {
       },
     );
     if (response?.data?.access_token) {
+      const userInfo = await axios.post(
+        'https://api.github.com/user',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${response?.data?.access_token}`,
+          },
+        },
+      );
+      if (userInfo.data.id) {
+        const ipData = await getIpAddress(ip);
+        const githubUserInfo = {
+          avatar: userInfo.data.avatar_url,
+          username: userInfo.data.login,
+          email: userInfo.data.email,
+          ip: ipData.ip,
+          ipAddress: ipData.province,
+          githubId: userInfo.data.id,
+        };
+        const resutl = await this.UserService.findAll({
+          githubId: userInfo.data.id,
+        });
+        if (resutl.length !== 0) {
+          const id = resutl[0].id;
+          const role = resutl[0].role;
+          await this.UserService.updateUser({ ...githubUserInfo, id, role });
+          const { accessToken, refreshToken } = await this.generateToken(
+            id,
+            resutl[0].username,
+          );
+          return {
+            id,
+            username: resutl[0].username,
+            accessToken,
+            refreshToken,
+          };
+        } else {
+          const id = nanoid.customAlphabet('1234567890', 10)();
+          await this.UserService.addUserByGithub({ ...githubUserInfo, id });
+          const { accessToken, refreshToken } = await this.generateToken(
+            id,
+            githubUserInfo.username,
+          );
+          return {
+            id,
+            username: githubUserInfo.username,
+            accessToken,
+            refreshToken,
+          };
+        }
+      } else {
+        throw new BadRequestException('获取用户信息失败');
+      }
+    } else {
+      throw new BadRequestException(response.data.error);
     }
   }
 
