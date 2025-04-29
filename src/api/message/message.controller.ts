@@ -51,8 +51,8 @@ export class MessageController {
     return this.messageService.approval(+id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
+  @Delete()
+  remove(@Body('id') id: string) {
     return this.messageService.remove(+id);
   }
 }

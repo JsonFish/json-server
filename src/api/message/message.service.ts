@@ -61,7 +61,8 @@ export class MessageService {
     return;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    await this.messsageRepository.update(id, { status: 2 });
     return;
   }
 }
