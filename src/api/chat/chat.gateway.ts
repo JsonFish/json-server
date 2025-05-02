@@ -51,7 +51,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       second: '2-digit',
     });
     const ipStr = client.handshake.address;
-    const { ip } = await getIpAddress(ipStr);
+    // const { ip } = await getIpAddress(ipStr);
+    const ip = ipStr;
     const chatMessage = await this.chatService.saveMessage({
       username,
       message,
