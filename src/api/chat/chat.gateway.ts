@@ -19,17 +19,21 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(private readonly chatService: ChatService) {}
 
+  private onlineNumber: number = 0; // 在线人数
   // 处理用户连接
   handleConnection(client: Socket) {
-    console.log(`用户端连接---: ${client.id}`);
-    // console.log(client.handshake); // 打印连接信息
-    // console.log(client.handshake.address);
-    // console.log(client.handshake.headers);
+    console.log(`用户连接---: ${client.id}`);
+    this.onlineNumber++;
+    setInterval(() => {
+      client.emit('sendOnline', {
+        onlineNumber: this.onlineNumber,
+      });
+    }, 2000);
   }
-
   // 处理用户断开连接
   handleDisconnect(client: Socket) {
-    console.log(`用户端开链接---: ${client.id}`);
+    console.log(`用户断开---: ${client.id}`);
+    this.onlineNumber--;
   }
 
   // 处理发送消息事件
@@ -50,9 +54,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       minute: '2-digit',
       second: '2-digit',
     });
-    const ipStr = client.handshake.address;
-    // const { ip } = await getIpAddress(ipStr);
-    const ip = ipStr;
+    const { ip } = await getIpAddress(client.handshake.address);
     const chatMessage = await this.chatService.saveMessage({
       username,
       message,
