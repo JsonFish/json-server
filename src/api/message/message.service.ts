@@ -1,10 +1,11 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import type { IResult } from 'ua-parser-js';
 import { QueryMessageDto, createMessageDto } from './dto/message.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Message } from './entities/message.entity';
 import { IpData } from '@/utils/ip-address';
+
 @Injectable()
 export class MessageService {
   constructor(

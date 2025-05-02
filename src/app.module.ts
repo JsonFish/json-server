@@ -12,6 +12,7 @@ import mysqlConfig from './config/mysql.config';
 import { AllExceptionFilter } from './core/filter/all-exception.filter';
 import { TransformInterceptor } from './core/interceptor/transform.interceptor';
 import { AuthGuard } from './core/guard/auth.guard';
+import { ChatModule } from './api/chat/chat.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(mysqlConfig),
@@ -22,6 +23,7 @@ import { AuthGuard } from './core/guard/auth.guard';
     MessageModule,
     ArticleModule,
     InfoModule,
+    ChatModule,
   ],
   controllers: [],
   providers: [
