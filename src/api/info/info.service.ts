@@ -15,15 +15,8 @@ export class InfoService {
     return infoData[0];
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} info`;
-  }
-
-  update(id: number, updateInfoDto: any) {
-    return `This action updates a #${id} info`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} info`;
+  async update(updateInfoDto: any) {
+    await this.informationRepository.update(1, updateInfoDto);
+    return;
   }
 }

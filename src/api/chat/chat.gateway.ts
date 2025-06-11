@@ -46,20 +46,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!username || !message || !avatar) {
       return;
     }
-    const createTime = new Date().toLocaleString('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
     const { ip } = await getIpAddress(client.handshake.address);
     const chatMessage = await this.chatService.saveMessage({
       username,
       message,
       avatar,
-      createTime,
       ip,
     });
 

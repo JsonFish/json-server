@@ -7,12 +7,14 @@ import {
   Param,
   Delete,
   Query,
+  Put,
   ParseIntPipe,
 } from '@nestjs/common';
 import { Public } from '@/core/guard/public.decorator';
 import { ArticleService } from './article.service';
 import {
   CreateArticleDto,
+  UpdateArticleDto,
   QueryArticleDto,
   DeleteArticleDto,
 } from './dto/article.dto';
@@ -20,6 +22,7 @@ import {
 @Controller('article')
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
+
   @Public()
   @Get()
   findAll(@Query() query: QueryArticleDto) {
@@ -27,13 +30,18 @@ export class ArticleController {
   }
 
   @Post()
-  create(@Body() createArticleDto: CreateArticleDto) {
-    return this.articleService.create(createArticleDto);
+  async create(@Body() createArticleDto: CreateArticleDto) {
+    return await this.articleService.create(createArticleDto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateArticleDto: any) {
-    return this.articleService.update(+id, updateArticleDto);
+  @Put('status')
+  async updateStatus(@Body() data: DeleteArticleDto) {
+    return await this.articleService.updateStatus(data.id);
+  }
+
+  @Put()
+  async update(@Body() updateArticleDto: UpdateArticleDto) {
+    return await this.articleService.update(updateArticleDto);
   }
 
   @Delete()

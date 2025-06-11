@@ -11,8 +11,5 @@ export class CreateChatMessageDto {
   avatar: string;
 
   @IsString()
-  createTime: string;
-
-  @IsString()
   ip: string;
 }

@@ -1,7 +1,11 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, In } from 'typeorm';
-import { CreateArticleDto, QueryArticleDto } from './dto/article.dto';
+import {
+  CreateArticleDto,
+  QueryArticleDto,
+  UpdateArticleDto,
+} from './dto/article.dto';
 import { Article } from './entities/article.entity';
 import { Tag } from '@/api/tag/entities/tag.entity';
 
@@ -53,12 +57,40 @@ export class ArticleService {
     return { articleList, total };
   }
 
-  create(createArticleDto: CreateArticleDto) {
-    return 'This action adds a new article';
+  async create(createArticleDto: CreateArticleDto) {
+    const tagIds = createArticleDto.tagIds.join(',');
+    const article = this.articleRepository.create({
+      ...createArticleDto,
+      tagIds,
+    });
+    await this.articleRepository.save(article);
+    return;
   }
 
-  update(id: number, updateArticleDto: any) {
-    return `This action updates a #${id} article`;
+  async update(updateArticleDto: UpdateArticleDto) {
+    const { id } = updateArticleDto;
+    const article = await this.articleRepository.findOne({
+      where: { id, is_deleted: 0 },
+    });
+    if (!article) {
+      throw new BadRequestException('文章不存在');
+    }
+    const tagIds = updateArticleDto.tagIds.join(',');
+    Object.assign(article, { ...updateArticleDto, tagIds });
+    await this.articleRepository.save(article);
+    return;
+  }
+
+  async updateStatus(id: number) {
+    const article = await this.articleRepository.findOne({
+      where: { id, is_deleted: 0 },
+    });
+    if (!article) {
+      throw new BadRequestException('文章不存在');
+    }
+    const status = article.status === 1 ? 0 : 1;
+    await this.articleRepository.update(id, { status });
+    return;
   }
 
   async remove(id: number) {

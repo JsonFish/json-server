@@ -48,6 +48,7 @@ export class LinkService {
       throw new BadRequestException('你已申请，请勿重复申请');
     }
     await this.linkRepository.save({ ...linkData, user_id: userId });
+    return;
   }
 
   async examine(body: ExamineLinkDto) {
