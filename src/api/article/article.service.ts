@@ -7,7 +7,7 @@ import {
   UpdateArticleDto,
 } from './dto/article.dto';
 import { Article } from './entities/article.entity';
-import { Tag } from '@/api/tag/entities/tag.entity';
+import { Tag } from './entities/tag.entity';
 
 @Injectable()
 export class ArticleService {
