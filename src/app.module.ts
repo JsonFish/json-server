@@ -4,7 +4,6 @@ import { APP_FILTER, APP_INTERCEPTOR, APP_GUARD } from '@nestjs/core';
 import { UserModule } from './api/user/user.module';
 import { AuthModule } from './api/auth/auth.module';
 import { ArticleModule } from './api/article/article.module';
-import { InfoModule } from './api/info/info.module';
 import mysqlConfig from './config/mysql.config';
 import { AllExceptionFilter } from './core/filter/all-exception.filter';
 import { TransformInterceptor } from './core/interceptor/transform.interceptor';
@@ -15,7 +14,6 @@ import { AuthGuard } from './core/guard/auth.guard';
     UserModule,
     AuthModule,
     ArticleModule,
-    InfoModule,
   ],
   controllers: [],
   providers: [
