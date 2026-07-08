@@ -9,7 +9,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { QueryUserDto, ShieldUserDto, UpdateUserDto } from './dto/user.dto';
+import { QueryUserDto, UpdateUserDto } from './dto/user.dto';
 
 @Controller('user')
 export class UserController {
@@ -23,10 +23,5 @@ export class UserController {
   @Put()
   update(@Body() body: UpdateUserDto) {
     return this.userService.updateUser(body);
-  }
-
-  @Delete()
-  shield(@Body() body: ShieldUserDto) {
-    return this.userService.shieldUser(body);
   }
 }

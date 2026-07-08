@@ -64,10 +64,3 @@ export class UpdateUserDto extends EmailDto {
   @IsString()
   githubId: string;
 }
-
-export class ShieldUserDto {
-  @IsString()
-  @Type(() => String)
-  @IsNotEmpty()
-  id: string;
-}

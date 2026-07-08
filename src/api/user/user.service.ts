@@ -6,12 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 import userConfig from '@/config/user.config';
 import getIpAddress from '@/utils/ip-address';
-import {
-  QueryUserDto,
-  UpdateUserDto,
-  AddUserDto,
-  ShieldUserDto,
-} from './dto/user.dto';
+import { QueryUserDto, UpdateUserDto, AddUserDto } from './dto/user.dto';
 @Injectable()
 export class UserService {
   constructor(
@@ -74,17 +69,6 @@ export class UserService {
       throw new BadRequestException('用户不存在');
     }
     Object.assign(user, { ...body, id: +id });
-    await this.usersRepository.save(user);
-    return;
-  }
-
-  async shieldUser(body: ShieldUserDto) {
-    const { id } = body;
-    const user = await this.usersRepository.findOne({ where: { id } });
-    if (!user) {
-      throw new BadRequestException('用户不存在');
-    }
-    user.status = user.status === 1 ? 0 : 1;
     await this.usersRepository.save(user);
     return;
   }
