@@ -51,13 +51,6 @@ export class AuthController {
   }
 
   @Public()
-  @Post('email')
-  email(@Body() EmailDto: EmailDto) {
-    const email = EmailDto.email;
-    return this.authService.sendEmail(email);
-  }
-
-  @Public()
   @Post('github')
   github(@Body() body: { code: string }, @Req() request: Request) {
     return this.authService.loginByGithub(body, request.ip);

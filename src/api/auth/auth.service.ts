@@ -12,7 +12,6 @@ import { UserService } from '../user/user.service';
 import { LoginDto, RegisterDto } from './dto/auth.dto';
 import secretKey from '@/config/jwt.config';
 import { AuthorizedRequest } from './auth.controller';
-import emailConfig, { mailOptions } from '@/config/email.config';
 import { EmailCode } from './entities/email-code.entity';
 import githubConfig from '@/config/github.config';
 import getIpAddress from '@/utils/ip-address';
@@ -51,22 +50,6 @@ export class AuthService {
       username,
     );
     return { username, avatar, accessToken, refreshToken };
-  }
-
-  async sendEmail(email: string) {
-    const res = await this.UserService.findAll({ email });
-    if (res.length != 0) {
-      throw new BadRequestException('该邮箱已注册');
-    }
-    this.transporter = nodemailer.createTransport(emailConfig);
-    const verifyCode = nanoid.customAlphabet('1234567890', 6)();
-    try {
-      await this.transporter.sendMail(mailOptions(email, verifyCode));
-    } catch {
-      throw new BadRequestException('验证码发送失败，请稍后再试');
-    }
-    await this.EmailCodeRepository.save({ email, code: verifyCode });
-    return;
   }
 
   async register(RegisterDto: RegisterDto, ip: string | undefined) {

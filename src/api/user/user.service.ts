@@ -4,7 +4,6 @@ import { Repository, Like } from 'typeorm';
 import * as nanoid from 'nanoid';
 import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
-import userConfig from '@/config/user.config';
 import getIpAddress from '@/utils/ip-address';
 import { QueryUserDto, UpdateUserDto, AddUserDto } from './dto/user.dto';
 @Injectable()
@@ -49,7 +48,7 @@ export class UserService {
       username,
       email,
       password: bcryptPassword,
-      avatar: userConfig.defaultAvatar,
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Json',
       ip: formatIp,
       ip_address,
     };
