@@ -14,9 +14,6 @@ export class User {
   @Column()
   username: string;
 
-  @Column({ default: '' })
-  password: string;
-
   @Column({ default: '-' })
   email: string;
 
@@ -43,4 +40,17 @@ export class User {
 
   @Column({ name: 'github_id', default: '' })
   githubId: string;
+
+  // 登录埋点字段
+  @Column({ name: 'last_login_time', type: 'timestamp', nullable: true })
+  lastLoginTime: Date | null;
+
+  @Column({ name: 'last_login_ip', default: '-' })
+  lastLoginIp: string;
+
+  @Column({ name: 'last_login_address', default: '-' })
+  lastLoginAddress: string;
+
+  @Column({ name: 'login_count', default: 0 })
+  loginCount: number;
 }

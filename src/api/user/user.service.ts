@@ -1,11 +1,9 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
-import * as nanoid from 'nanoid';
-import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
-import getIpAddress from '@/utils/ip-address';
-import { QueryUserDto, UpdateUserDto, AddUserDto } from './dto/user.dto';
+import { QueryUserDto, UpdateUserDto } from './dto/user.dto';
+
 @Injectable()
 export class UserService {
   constructor(
@@ -30,33 +28,10 @@ export class UserService {
       take: pageSize,
       order: { create_time: 'ASC' },
     });
-    const usersWithoutPassword = userList.map(({ password, ...rest }) => rest);
-    return { userList: usersWithoutPassword, total };
+    return { userList, total };
   }
 
-  async addUser(userInfo: AddUserDto, requestIp: string | undefined) {
-    const { email, password } = userInfo;
-    const id = nanoid.customAlphabet('1234567890', 10)();
-    const username = email.split('@')[0];
-    const bcryptPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-    const { ip, province } = await getIpAddress(requestIp);
-    const formatIp = ip;
-    const ip_address = province;
-
-    const userInfoData = {
-      id,
-      username,
-      email,
-      password: bcryptPassword,
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Json',
-      ip: formatIp,
-      ip_address,
-    };
-    await this.usersRepository.save(userInfoData);
-    return userInfoData;
-  }
-
-  async addUserByGithub(userInfo: any) {
+  async addUserByGithub(userInfo: Partial<User>) {
     await this.usersRepository.save(userInfo);
     return;
   }
@@ -67,7 +42,23 @@ export class UserService {
     if (!user) {
       throw new BadRequestException('用户不存在');
     }
-    Object.assign(user, { ...body, id: +id });
+    Object.assign(user, { ...body, id });
+    await this.usersRepository.save(user);
+    return;
+  }
+
+  /**
+   * 更新用户登录埋点信息
+   */
+  async updateLoginInfo(id: string, ip: string, ipAddress: string) {
+    const user = await this.usersRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new BadRequestException('用户不存在');
+    }
+    user.lastLoginTime = new Date();
+    user.lastLoginIp = ip;
+    user.lastLoginAddress = ipAddress;
+    user.loginCount = (user.loginCount || 0) + 1;
     await this.usersRepository.save(user);
     return;
   }

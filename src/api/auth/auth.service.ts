@@ -1,85 +1,19 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import * as captchapng from 'captchapng';
-import * as bcrypt from 'bcrypt';
 import axios from 'axios';
 import * as nanoid from 'nanoid';
-import * as nodemailer from 'nodemailer';
-import type { Transporter } from 'nodemailer';
 import { UserService } from '../user/user.service';
-import { LoginDto, RegisterDto } from './dto/auth.dto';
 import secretKey from '@/config/jwt.config';
 import { AuthorizedRequest } from './auth.controller';
-import { EmailCode } from './entities/email-code.entity';
 import githubConfig from '@/config/github.config';
 import getIpAddress from '@/utils/ip-address';
 
 @Injectable()
 export class AuthService {
-  private transporter: Transporter;
   constructor(
-    @InjectRepository(EmailCode)
-    private readonly EmailCodeRepository: Repository<EmailCode>,
     private JwtService: JwtService,
     private UserService: UserService,
   ) {}
-
-  getCaptcha(session: Record<string, any>) {
-    const code = nanoid.customAlphabet('1234567890', 4)();
-    session.captchaCode = code;
-    const png = new captchapng(120, 45, code);
-    png.color(255, 255, 255, 0);
-    png.color(104, 105, 109);
-    return { imageBase64: png.getBase64() };
-  }
-
-  async login(loginDto: LoginDto) {
-    const res = await this.UserService.findAll(loginDto);
-    if (res.length == 0) {
-      throw new BadRequestException('账号未注册');
-    }
-    const { id, username, avatar, password } = res[0];
-    const compareResult = bcrypt.compareSync(loginDto.password, password);
-    if (!compareResult) {
-      throw new BadRequestException('密码错误');
-    }
-    const { accessToken, refreshToken } = await this.generateToken(
-      id,
-      username,
-    );
-    return { username, avatar, accessToken, refreshToken };
-  }
-
-  async register(RegisterDto: RegisterDto, ip: string | undefined) {
-    const res = await this.UserService.findAll(RegisterDto);
-    if (res.length != 0) {
-      throw new BadRequestException('该邮箱已注册');
-    }
-    const { email, password, code } = RegisterDto;
-    const result = await this.EmailCodeRepository.findOne({
-      where: { email },
-      order: { send_time: 'DESC' },
-    });
-    if (!result || result.code !== code) {
-      throw new BadRequestException('验证码错误');
-    }
-    const timeDifference =
-      (new Date().getTime() - new Date(result.send_time).getTime()) / 1000 / 60;
-    if (timeDifference > 5) {
-      throw new BadRequestException('验证码已过期');
-    }
-    const { id, username, avatar } = await this.UserService.addUser(
-      { email, password },
-      ip,
-    );
-    const { accessToken, refreshToken } = await this.generateToken(
-      id,
-      username,
-    );
-    return { username, avatar, accessToken, refreshToken };
-  }
 
   async refreshToken(request: AuthorizedRequest) {
     const { id, username } = request.user;
@@ -89,7 +23,7 @@ export class AuthService {
   async loginByGithub(body: { code: string }, ip: string | undefined) {
     const { code } = body;
     if (!code) throw new BadRequestException('登录失败，请稍后再试');
-    // 获取access_token
+    // 获取 access_token
     const response = await axios.post(
       'https://github.com/login/oauth/access_token',
       {
@@ -119,27 +53,42 @@ export class AuthService {
           ipAddress: ipData.province,
           githubId: userInfo.data.id,
         };
-        const resutl = await this.UserService.findAll({
+        const result = await this.UserService.findAll({
           githubId: userInfo.data.id,
         });
-        if (resutl.length !== 0) {
-          const id = resutl[0].id;
-          const role = resutl[0].role;
-          const avatar = resutl[0].avatar;
+        if (result.length !== 0) {
+          const id = result[0].id;
+          const role = result[0].role;
+          const avatar = result[0].avatar;
+          // 更新用户基本信息
           await this.UserService.updateUser({ ...githubUserInfo, id, role });
+          // 更新登录埋点信息
+          await this.UserService.updateLoginInfo(
+            id,
+            ipData.ip,
+            ipData.province,
+          );
           const { accessToken, refreshToken } = await this.generateToken(
             id,
-            resutl[0].username,
+            result[0].username,
           );
           return {
             avatar,
-            username: resutl[0].username,
+            username: result[0].username,
             accessToken,
             refreshToken,
           };
         } else {
+          // 新用户注册（仅第三方登录）
           const id = nanoid.customAlphabet('1234567890', 10)();
-          await this.UserService.addUserByGithub({ ...githubUserInfo, id });
+          await this.UserService.addUserByGithub({
+            ...githubUserInfo,
+            id,
+            lastLoginTime: new Date(),
+            lastLoginIp: ipData.ip,
+            lastLoginAddress: ipData.province,
+            loginCount: 1,
+          });
           const { accessToken, refreshToken } = await this.generateToken(
             id,
             githubUserInfo.username,
