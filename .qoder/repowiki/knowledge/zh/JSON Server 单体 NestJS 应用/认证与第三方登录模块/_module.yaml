@@ -1,0 +1,10 @@
+schema_version: 1
+module_path: api_auth
+title: 认证与第三方登录模块
+scope:
+    - src/api/auth/
+source_files: []
+depends_on: []
+related_to:
+    - path: api_user
+    - path: core_infra

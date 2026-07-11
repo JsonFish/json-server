@@ -1,0 +1,17 @@
+schema_version: 1
+module_path: ""
+title: JSON Server 单体 NestJS 应用
+scope:
+    - README.md
+    - .gitignore
+    - .prettierrc
+    - eslint.config.mjs
+    - nest-cli.json
+    - package.json
+    - pnpm-lock.yaml
+    - tsconfig.build.json
+    - tsconfig.json
+    - sql/
+source_files: []
+depends_on: []
+related_to: []

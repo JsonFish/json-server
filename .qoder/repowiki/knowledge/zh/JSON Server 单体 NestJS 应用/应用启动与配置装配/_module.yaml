@@ -1,0 +1,11 @@
+schema_version: 1
+module_path: app_config
+title: 应用启动与配置装配
+scope:
+    - src/config/
+    - src/app.module.ts
+    - src/main.ts
+source_files: []
+depends_on: []
+related_to:
+    - path: core_infra

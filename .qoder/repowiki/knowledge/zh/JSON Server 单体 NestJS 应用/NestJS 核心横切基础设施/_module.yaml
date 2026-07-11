@@ -1,0 +1,12 @@
+schema_version: 1
+module_path: core_infra
+title: NestJS 核心横切基础设施
+scope:
+    - src/core/
+    - src/common/
+source_files: []
+depends_on: []
+related_to:
+    - path: api_article
+    - path: api_auth
+    - path: app_config

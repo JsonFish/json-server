@@ -1,0 +1,9 @@
+schema_version: 1
+module_path: api_article
+title: 文章管理 API 模块
+scope:
+    - src/api/article/
+source_files: []
+depends_on: []
+related_to:
+    - path: core_infra

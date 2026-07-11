@@ -1,0 +1,86 @@
+# 知识卡导出索引文件
+schema_version: 1
+locale: zh-CN
+branch: master
+nodes_managed: true
+exported_at: "2026-07-11T07:04:26Z"
+modules:
+    "":
+        dir_name: JSON Server 单体 NestJS 应用
+        title: JSON Server 单体 NestJS 应用
+        scope:
+            - README.md
+            - .gitignore
+            - .prettierrc
+            - eslint.config.mjs
+            - nest-cli.json
+            - package.json
+            - pnpm-lock.yaml
+            - tsconfig.build.json
+            - tsconfig.json
+            - sql/
+        source_files: []
+        children:
+            - api_article
+            - api_auth
+            - api_user
+            - app_config
+            - core_infra
+        depends_on: []
+        related_to: []
+    api_article:
+        dir_name: 文章管理 API 模块
+        title: 文章管理 API 模块
+        scope:
+            - src/api/article/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: core_infra
+    api_auth:
+        dir_name: 认证与第三方登录模块
+        title: 认证与第三方登录模块
+        scope:
+            - src/api/auth/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: api_user
+            - path: core_infra
+    api_user:
+        dir_name: 用户管理 API 模块
+        title: 用户管理 API 模块
+        scope:
+            - src/api/user/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: api_auth
+    app_config:
+        dir_name: 应用启动与配置装配
+        title: 应用启动与配置装配
+        scope:
+            - src/config/
+            - src/app.module.ts
+            - src/main.ts
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: core_infra
+    core_infra:
+        dir_name: NestJS 核心横切基础设施
+        title: NestJS 核心横切基础设施
+        scope:
+            - src/core/
+            - src/common/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to:
+            - path: api_article
+            - path: api_auth
+            - path: app_config
