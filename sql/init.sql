@@ -5,11 +5,11 @@
 -- ============================================================
 
 -- 创建数据库
-CREATE DATABASE IF NOT EXISTS `json_server`
+CREATE DATABASE IF NOT EXISTS `jsonfi`
   DEFAULT CHARACTER SET utf8mb4
   DEFAULT COLLATE utf8mb4_unicode_ci;
 
-USE `json_server`;
+USE `jsonfi`;
 
 -- ============================================================
 -- 1. 用户表 (user)
