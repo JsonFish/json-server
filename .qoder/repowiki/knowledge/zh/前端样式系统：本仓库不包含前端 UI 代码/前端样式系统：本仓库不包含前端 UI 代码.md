@@ -1,6 +1,7 @@
 ---
 kind: frontend_style
 name: 前端样式系统：本仓库不包含前端 UI 代码
+slug: frontend_style
 category: frontend_style
 scope:
     - '**'

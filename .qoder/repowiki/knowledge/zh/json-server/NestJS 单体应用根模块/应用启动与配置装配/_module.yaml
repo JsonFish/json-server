@@ -1,5 +1,5 @@
 schema_version: 1
-module_path: app_config
+module_path: f590dbba-2704-4762-9fd1-bc1b2cbec38f/cfd55e1c-b175-4e1c-82d6-ce55387fc27d
 title: 应用启动与配置装配
 scope:
     - src/config/
@@ -7,5 +7,4 @@ scope:
     - src/main.ts
 source_files: []
 depends_on: []
-related_to:
-    - path: core_infra
+related_to: []

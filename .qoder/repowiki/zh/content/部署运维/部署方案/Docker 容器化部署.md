@@ -12,6 +12,13 @@
 - [sql/init.sql](file://sql/init.sql)
 </cite>
 
+## 更新摘要
+**变更内容**   
+- 更新了数据库初始化脚本中的数据库名称为 `jsonfi`
+- 修正了Docker Compose配置示例中的数据库环境变量
+- 更新了TypeORM配置说明以反映正确的数据库名称
+- 完善了容器编排的环境变量配置示例
+
 ## 目录
 1. [简介](#简介)
 2. [项目结构](#项目结构)
@@ -41,7 +48,7 @@ A["应用入口<br/>src/main.ts"] --> B["应用模块<br/>src/app.module.ts"]
 B --> C["TypeORM 配置<br/>src/config/mysql.config.ts"]
 B --> D["JWT 配置<br/>src/config/jwt.config.ts"]
 B --> E["GitHub 配置<br/>src/config/github.config.ts"]
-F["数据库初始化脚本<br/>sql/init.sql"] --> G["MySQL 服务"]
+F["数据库初始化脚本<br/>sql/init.sql"] --> G["MySQL 服务<br/>数据库: jsonfi"]
 H["包管理与脚本<br/>package.json"] --> A
 ```
 
@@ -72,7 +79,7 @@ H["包管理与脚本<br/>package.json"] --> A
   - TypeORM 连接参数（host/port/username/password/database）。
   - JWT 密钥、GitHub OAuth 客户端凭据等。
 - 数据库初始化
-  - 提供建库、建表、索引与初始标签数据脚本。
+  - 提供建库、建表、索引与初始标签数据脚本，数据库名为 `jsonfi`。
 
 **章节来源**
 - [src/main.ts:9-46](file://src/main.ts#L9-L46)
@@ -92,7 +99,7 @@ DC["Docker Compose 编排"]
 end
 subgraph "应用网络"
 APP["NestJS 应用容器<br/>dist/main.js"]
-DB["MySQL 容器<br/>数据卷持久化"]
+DB["MySQL 容器<br/>数据卷持久化<br/>数据库: jsonfi"]
 PROM["Prometheus 容器(可选)"]
 end
 DC --> APP
@@ -156,6 +163,8 @@ APP --> |"暴露 /metrics (可选)"| PROM
 - 在 src/config/*.ts 中读取环境变量，并提供默认值。
 - 在 docker-compose.yml 中按环境注入不同的 .env 文件。
 
+**更新** 数据库名称应设置为 `jsonfi` 以匹配数据库初始化脚本
+
 参考路径：
 - [src/main.ts:40-46](file://src/main.ts#L40-L46)
 - [src/config/mysql.config.ts:3-12](file://src/config/mysql.config.ts#L3-L12)
@@ -184,12 +193,14 @@ APP --> |"暴露 /metrics (可选)"| PROM
   - 初始化：挂载 sql/init.sql 到容器初始化目录
   - 环境变量：ROOT_PASSWORD、MYSQL_DATABASE、MYSQL_USER、MYSQL_PASSWORD
 
+**更新** 数据库名称已更新为 `jsonfi`，需确保环境变量 MYSQL_DATABASE=jsonfi
+
 参考路径：
-- [sql/init.sql:1-138](file://sql/init.sql#L1-L138)
+- [sql/init.sql:1-138](file://sql/init.sql#L1-138)
 - [src/config/mysql.config.ts:3-12](file://src/config/mysql.config.ts#L3-L12)
 
 **章节来源**
-- [sql/init.sql:1-138](file://sql/init.sql#L1-L138)
+- [sql/init.sql:1-138](file://sql/init.sql#L1-138)
 - [src/config/mysql.config.ts:3-12](file://src/config/mysql.config.ts#L3-L12)
 
 ### 镜像优化最佳实践
@@ -260,7 +271,7 @@ AM --> AR["api/article"]
 AM --> MC["src/config/mysql.config.ts"]
 AM --> JC["src/config/jwt.config.ts"]
 AM --> GC["src/config/github.config.ts"]
-MC --> DB["MySQL 服务"]
+MC --> DB["MySQL 服务<br/>数据库: jsonfi"]
 ```
 
 **图表来源**
@@ -298,6 +309,7 @@ MC --> DB["MySQL 服务"]
   - 查看容器日志定位异常堆栈。
 - 数据库连接失败
   - 确认数据库服务已就绪，账号密码与库名一致。
+  - **重要**：确保数据库名称为 `jsonfi`，与初始化脚本保持一致。
   - 检查防火墙与安全组策略。
 - 权限问题
   - 确保以非 root 用户运行应用容器。
@@ -309,9 +321,10 @@ MC --> DB["MySQL 服务"]
 **章节来源**
 - [src/main.ts:40-46](file://src/main.ts#L40-L46)
 - [src/config/mysql.config.ts:3-12](file://src/config/mysql.config.ts#L3-L12)
+- [sql/init.sql:8-12](file://sql/init.sql#L8-L12)
 
 ## 结论
-通过多阶段构建、环境变量驱动的配置管理、Compose 编排与完善的监控日志体系，可将该 NestJS 博客系统稳定地部署到生产环境。配合镜像优化与安全扫描，可在保证安全性的同时获得更小的镜像体积与更快的冷启动速度。
+通过多阶段构建、环境变量驱动的配置管理、Compose 编排与完善的监控日志体系，可将该 NestJS 博客系统稳定地部署到生产环境。配合镜像优化与安全扫描，可在保证安全性的同时获得更小的镜像体积与更快的冷启动速度。**特别注意**：数据库名称已统一为 `jsonfi`，请确保所有相关配置与此保持一致。
 
 ## 附录
 - 常用命令（概念性说明）

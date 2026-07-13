@@ -1,14 +1,10 @@
 ---
 kind: build_system
 name: NestJS 单体应用构建与脚本体系
+slug: build_system
 category: build_system
 scope:
     - '**'
-source_files:
-    - package.json
-    - nest-cli.json
-    - tsconfig.json
-    - tsconfig.build.json
 ---
 
 本项目采用 NestJS CLI 作为核心构建系统，基于 pnpm 进行依赖管理，通过 TypeScript + ts-jest 完成编译、测试与产物输出。整体为单仓库单体架构，无多包 monorepo 拆分，也无 Docker/CI/Makefile 等外部构建编排文件。

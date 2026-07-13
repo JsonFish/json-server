@@ -1,11 +1,8 @@
 ---
 kind: external_dependency
 name: GitHub OAuth 第三方登录集成
-slug: github-oauth
+slug: github-oauth-第三方登录集成
 category: external_dependency
-category_hints:
-    - vendor_identity
-    - auth_protocol
 scope:
     - '**'
 ---

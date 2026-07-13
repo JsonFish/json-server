@@ -1,10 +1,8 @@
 ---
 kind: external_dependency
 name: MySQL 关系型数据库
-slug: mysql
+slug: mysql-关系型数据库
 category: external_dependency
-category_hints:
-    - vendor_identity
 scope:
     - '**'
 ---

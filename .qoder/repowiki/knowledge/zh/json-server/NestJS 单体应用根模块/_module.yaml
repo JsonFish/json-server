@@ -1,6 +1,6 @@
 schema_version: 1
-module_path: ""
-title: JSON Server 单体 NestJS 应用
+module_path: f590dbba-2704-4762-9fd1-bc1b2cbec38f
+title: NestJS 单体应用根模块
 scope:
     - README.md
     - .gitignore

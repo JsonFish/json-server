@@ -1,14 +1,10 @@
 ---
 kind: error_handling
 name: NestJS 全局异常过滤与 HTTP 错误处理
+slug: error_handling
 category: error_handling
 scope:
     - '**'
-source_files:
-    - src/core/filter/http-exception.filter.ts
-    - src/core/filter/all-exception.filter.ts
-    - src/core/guard/auth.guard.ts
-    - src/main.ts
 ---
 
 该 NestJS 单体应用采用框架内置的 `ExceptionFilter` + `HttpException` 体系进行错误处理，未引入自定义业务错误类型或统一错误码枚举。核心机制如下：

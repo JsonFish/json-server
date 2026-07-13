@@ -1,0 +1,7 @@
+schema_version: 1
+module_path: aae20911-9767-4c94-882b-5d686f84fed0/25d93982-23c5-4ced-8469-ca57343ba08d
+title: NestJS 单体多模块应用（core_infra + api_auth + api_user + api_article）
+scope: []
+source_files: []
+depends_on: []
+related_to: []

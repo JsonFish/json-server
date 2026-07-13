@@ -3,11 +3,38 @@ schema_version: 1
 locale: zh-CN
 branch: master
 nodes_managed: true
-exported_at: "2026-07-11T07:04:26Z"
+exported_at: "2026-07-13T07:06:38Z"
 modules:
     "":
-        dir_name: JSON Server 单体 NestJS 应用
-        title: JSON Server 单体 NestJS 应用
+        dir_name: json-server
+        title: json-server
+        scope: []
+        source_files: []
+        children:
+            - aae20911-9767-4c94-882b-5d686f84fed0
+            - f590dbba-2704-4762-9fd1-bc1b2cbec38f
+        depends_on: []
+        related_to: []
+    aae20911-9767-4c94-882b-5d686f84fed0:
+        dir_name: Json 博客 NestJS 单体应用
+        title: Json 博客 NestJS 单体应用
+        scope: []
+        source_files: []
+        children:
+            - aae20911-9767-4c94-882b-5d686f84fed0/25d93982-23c5-4ced-8469-ca57343ba08d
+        depends_on: []
+        related_to: []
+    aae20911-9767-4c94-882b-5d686f84fed0/25d93982-23c5-4ced-8469-ca57343ba08d:
+        dir_name: NestJS 单体多模块应用（core_infra + api_auth + api_user + api_article）
+        title: NestJS 单体多模块应用（core_infra + api_auth + api_user + api_article）
+        scope: []
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    f590dbba-2704-4762-9fd1-bc1b2cbec38f:
+        dir_name: NestJS 单体应用根模块
+        title: NestJS 单体应用根模块
         scope:
             - README.md
             - .gitignore
@@ -21,14 +48,14 @@ modules:
             - sql/
         source_files: []
         children:
-            - api_article
-            - api_auth
-            - api_user
-            - app_config
-            - core_infra
+            - f590dbba-2704-4762-9fd1-bc1b2cbec38f/5cfacd14-a8fa-44c5-99fb-70888585c33b
+            - f590dbba-2704-4762-9fd1-bc1b2cbec38f/63e6efc8-0be4-4f16-bfdc-8a3565843e39
+            - f590dbba-2704-4762-9fd1-bc1b2cbec38f/a907fcd1-05a0-46c5-bc6c-6210a5b3512c
+            - f590dbba-2704-4762-9fd1-bc1b2cbec38f/c187d279-aac0-4b9c-b719-2c6b0cc0942c
+            - f590dbba-2704-4762-9fd1-bc1b2cbec38f/cfd55e1c-b175-4e1c-82d6-ce55387fc27d
         depends_on: []
         related_to: []
-    api_article:
+    f590dbba-2704-4762-9fd1-bc1b2cbec38f/5cfacd14-a8fa-44c5-99fb-70888585c33b:
         dir_name: 文章管理 API 模块
         title: 文章管理 API 模块
         scope:
@@ -36,20 +63,18 @@ modules:
         source_files: []
         children: []
         depends_on: []
-        related_to:
-            - path: core_infra
-    api_auth:
-        dir_name: 认证与第三方登录模块
-        title: 认证与第三方登录模块
+        related_to: []
+    f590dbba-2704-4762-9fd1-bc1b2cbec38f/63e6efc8-0be4-4f16-bfdc-8a3565843e39:
+        dir_name: NestJS 核心横切基础设施
+        title: NestJS 核心横切基础设施
         scope:
-            - src/api/auth/
+            - src/core/
+            - src/common/
         source_files: []
         children: []
         depends_on: []
-        related_to:
-            - path: api_user
-            - path: core_infra
-    api_user:
+        related_to: []
+    f590dbba-2704-4762-9fd1-bc1b2cbec38f/a907fcd1-05a0-46c5-bc6c-6210a5b3512c:
         dir_name: 用户管理 API 模块
         title: 用户管理 API 模块
         scope:
@@ -57,9 +82,17 @@ modules:
         source_files: []
         children: []
         depends_on: []
-        related_to:
-            - path: api_auth
-    app_config:
+        related_to: []
+    f590dbba-2704-4762-9fd1-bc1b2cbec38f/c187d279-aac0-4b9c-b719-2c6b0cc0942c:
+        dir_name: 认证与第三方登录模块
+        title: 认证与第三方登录模块
+        scope:
+            - src/api/auth/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    f590dbba-2704-4762-9fd1-bc1b2cbec38f/cfd55e1c-b175-4e1c-82d6-ce55387fc27d:
         dir_name: 应用启动与配置装配
         title: 应用启动与配置装配
         scope:
@@ -69,18 +102,4 @@ modules:
         source_files: []
         children: []
         depends_on: []
-        related_to:
-            - path: core_infra
-    core_infra:
-        dir_name: NestJS 核心横切基础设施
-        title: NestJS 核心横切基础设施
-        scope:
-            - src/core/
-            - src/common/
-        source_files: []
-        children: []
-        depends_on: []
-        related_to:
-            - path: api_article
-            - path: api_auth
-            - path: app_config
+        related_to: []

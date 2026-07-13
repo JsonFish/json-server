@@ -1,10 +1,8 @@
 ---
 kind: external_dependency
 name: JWT 无状态鉴权机制
-slug: jwt
+slug: jwt-无状态鉴权机制
 category: external_dependency
-category_hints:
-    - auth_protocol
 scope:
     - '**'
 ---

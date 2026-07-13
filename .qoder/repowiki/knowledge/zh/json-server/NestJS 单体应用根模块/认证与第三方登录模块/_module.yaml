@@ -1,10 +1,8 @@
 schema_version: 1
-module_path: api_auth
+module_path: f590dbba-2704-4762-9fd1-bc1b2cbec38f/c187d279-aac0-4b9c-b719-2c6b0cc0942c
 title: 认证与第三方登录模块
 scope:
     - src/api/auth/
 source_files: []
 depends_on: []
-related_to:
-    - path: api_user
-    - path: core_infra
+related_to: []

@@ -1,9 +1,8 @@
 schema_version: 1
-module_path: api_user
+module_path: f590dbba-2704-4762-9fd1-bc1b2cbec38f/a907fcd1-05a0-46c5-bc6c-6210a5b3512c
 title: 用户管理 API 模块
 scope:
     - src/api/user/
 source_files: []
 depends_on: []
-related_to:
-    - path: api_auth
+related_to: []

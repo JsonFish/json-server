@@ -1,13 +1,10 @@
 ---
 kind: dependency_management
 name: pnpm 依赖锁定与版本策略
+slug: dependency_management
 category: dependency_management
 scope:
     - '**'
-source_files:
-    - package.json
-    - pnpm-lock.yaml
-    - .pnpm-store/v3
 ---
 
 本项目采用 pnpm 作为包管理器，通过 package.json 声明依赖、pnpm-lock.yaml 锁定精确版本，形成标准的 npm 生态依赖管理方案。

@@ -1,15 +1,10 @@
 ---
 kind: configuration_system
 name: NestJS 应用配置系统（硬编码 + 环境变量）
+slug: configuration_system
 category: configuration_system
 scope:
     - '**'
-source_files:
-    - src/config/mysql.config.ts
-    - src/config/jwt.config.ts
-    - src/config/github.config.ts
-    - src/app.module.ts
-    - src/main.ts
 ---
 
 ## 1. 采用的方式
