@@ -65,6 +65,8 @@ CREATE TABLE `article`
 (
     `id`             INT AUTO_INCREMENT PRIMARY KEY COMMENT '文章ID',
     `title`          VARCHAR(200)                     NOT NULL DEFAULT '' COMMENT '标题',
+    `slug`           VARCHAR(200)                     NOT NULL COMMENT '前端 URL 标识',
+    `type`           ENUM('post', 'note')             NOT NULL DEFAULT 'post' COMMENT '内容类型',
     `description`    VARCHAR(500)                     NOT NULL DEFAULT '' COMMENT '摘要描述',
     `content`        LONGTEXT                         NOT NULL COMMENT '正文内容 (Markdown)',
     `tag_ids`        VARCHAR(255)                     NOT NULL DEFAULT '[]' COMMENT '标签ID JSON数组, 如 [1,2,3]',
@@ -85,6 +87,8 @@ CREATE TABLE `article`
     -- 索引
     KEY `idx_author_id` (`author_id`),
     KEY `idx_status` (`status`),
+    UNIQUE KEY `uk_slug` (`slug`),
+    KEY `idx_type_status_create_time` (`type`, `status`, `create_time`),
     KEY `idx_is_top` (`is_top`),
     KEY `idx_create_time` (`create_time`)
 ) ENGINE = InnoDB
@@ -135,3 +139,10 @@ VALUES ('前端'),
        ('DevOps'),
        ('随笔');
 
+-- 供 JsonFi 前台联调使用的公开内容
+INSERT INTO `article` (`title`, `slug`, `type`, `description`, `content`, `tag_ids`, `status`)
+VALUES
+  ('The Art of Minimalism in Web Design', 'minimalism-in-web-design', 'post', 'Exploring how less can be more in modern digital experiences.', '<h2>Why Less is More</h2><p>Minimalism removes distractions and lets content lead the experience.</p>', '1', 1),
+  ('Building with Next.js and Tailwind', 'nextjs-tailwind', 'post', 'A practical look at building a modern, fast blog.', '<h2>Modern frontend tooling</h2><p>Next.js and Tailwind make a productive pair.</p>', '1', 1),
+  ('夏日午后的咖啡馆', 'summer-afternoon-cafe', 'note', '窗外蝉鸣不止，手边的冰美式慢慢化开。这一刻的安静，值得记下来。', '<p>下午三点，阳光从落地窗斜斜地照进来。</p><blockquote>所谓幸福，也许就是此刻的安静。</blockquote>', '5', 1),
+  ('周末爬山记', 'weekend-hiking', 'note', '清晨六点出发，山顶的风吹散了所有的疲惫。', '<p>九点十五分，终于站上了山顶。</p><blockquote>山不在高，有坚持则能登顶。</blockquote>', '5', 1);

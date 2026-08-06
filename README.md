@@ -32,6 +32,23 @@
 $ pnpm install
 ```
 
+## Local database and JsonFi integration
+
+Create the local database and sample published posts/notes with `mysql -u root
+-p < sql/init.sql`. This script recreates the `jsonfi` tables, so do not run it
+against a database containing data you need to keep.
+
+The database connection is configured through `DB_HOST`, `DB_PORT`,
+`DB_USERNAME`, `DB_PASSWORD`, and `DB_DATABASE` (default: `127.0.0.1:3306`,
+`root`, and `jsonfi`). When this service runs on port 3001, JsonFi consumes:
+
+- `GET /blog/posts` and `GET /blog/posts/:slug`
+- `GET /blog/notes` and `GET /blog/notes/:slug`
+
+All four endpoints are public and return the standard `{ code, data, message }`
+response. Set `CORS_ORIGIN` if the frontend is not served from
+`http://localhost:3000`.
+
 ## Compile and run the project
 
 ```bash

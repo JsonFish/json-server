@@ -14,6 +14,14 @@ export class Article {
   @Column()
   title: string;
 
+  /** Public, stable identifier used in blog URLs. */
+  @Column({ unique: true })
+  slug: string;
+
+  /** `post` is a long-form article; `note` is a short note. */
+  @Column({ default: 'post' })
+  type: 'post' | 'note';
+
   @Column()
   content: string;
 

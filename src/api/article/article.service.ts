@@ -1,4 +1,9 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, In } from 'typeorm';
 import {
@@ -19,7 +24,7 @@ export class ArticleService {
   ) {}
 
   async findAll(query: QueryArticleDto) {
-    const { page, pageSize, status, title, id } = query;
+    const { page, pageSize, status, title, id, type } = query;
     if (id) {
       const article = await this.articleRepository.findOne({
         where: { id, is_deleted: 0 },
@@ -30,12 +35,13 @@ export class ArticleService {
           id: In(article.tagIds.split(',')),
         });
       }
-      return { ...article, tags };
+      return article ? { ...article, tags } : null;
     }
     let [articleList, total] = await this.articleRepository.findAndCount({
       where: {
         title: title ? Like(`%${title}%`) : undefined,
         status,
+        type,
         is_deleted: 0,
       },
       skip: (page - 1) * pageSize,
@@ -59,12 +65,16 @@ export class ArticleService {
 
   async create(createArticleDto: CreateArticleDto) {
     const tagIds = createArticleDto.tagIds.join(',');
+    const slug = await this.createSlug(
+      createArticleDto.slug || createArticleDto.title,
+    );
     const article = this.articleRepository.create({
       ...createArticleDto,
       tagIds,
+      slug,
+      type: createArticleDto.type ?? 'post',
     });
-    await this.articleRepository.save(article);
-    return;
+    return await this.articleRepository.save(article);
   }
 
   async update(updateArticleDto: UpdateArticleDto) {
@@ -76,9 +86,11 @@ export class ArticleService {
       throw new BadRequestException('文章不存在');
     }
     const tagIds = updateArticleDto.tagIds.join(',');
-    Object.assign(article, { ...updateArticleDto, tagIds });
-    await this.articleRepository.save(article);
-    return;
+    const slug = updateArticleDto.slug
+      ? await this.createSlug(updateArticleDto.slug, article.id)
+      : article.slug;
+    Object.assign(article, { ...updateArticleDto, tagIds, slug });
+    return await this.articleRepository.save(article);
   }
 
   async updateStatus(id: number) {
@@ -99,5 +111,67 @@ export class ArticleService {
       throw new BadRequestException('删除失败');
     }
     return;
+  }
+
+  async findPublished(type: 'post' | 'note', page: number, pageSize: number) {
+    const [articleList, total] = await this.articleRepository.findAndCount({
+      where: { type, status: 1, is_deleted: 0 },
+      order: { isTop: 'DESC', createTime: 'DESC' },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+
+    return {
+      articleList: await this.withTags(articleList),
+      total,
+      page,
+      pageSize,
+    };
+  }
+
+  async findPublishedBySlug(type: 'post' | 'note', slug: string) {
+    const article = await this.articleRepository.findOne({
+      where: { type, slug, status: 1, is_deleted: 0 },
+    });
+    if (!article) {
+      throw new NotFoundException('文章不存在');
+    }
+
+    await this.articleRepository.increment({ id: article.id }, 'views', 1);
+    const [result] = await this.withTags([
+      { ...article, views: article.views + 1 },
+    ]);
+    return result;
+  }
+
+  private async withTags(articleList: Article[]) {
+    return Promise.all(
+      articleList.map(async (article) => {
+        const ids = article.tagIds
+          .split(',')
+          .map((id) => Number(id))
+          .filter((id) => Number.isInteger(id) && id > 0);
+        const tags = ids.length
+          ? await this.tagRepository.findBy({ id: In(ids) })
+          : [];
+        return { ...article, tags };
+      }),
+    );
+  }
+
+  private async createSlug(value: string, currentId?: number) {
+    const normalized = value
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+    const base = normalized || `article-${Date.now()}`;
+    const existing = await this.articleRepository.findOne({
+      where: { slug: base },
+    });
+    if (existing && existing.id !== currentId) {
+      throw new ConflictException('文章链接已存在');
+    }
+    return base;
   }
 }

@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsNotEmpty,
   IsArray,
+  IsIn,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PaginationDto } from '@/common/dto/pagination.dto';
@@ -13,6 +14,15 @@ export class CreateArticleDto {
   @IsNotEmpty()
   @IsString()
   title: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  slug?: string;
+
+  @IsOptional()
+  @IsIn(['post', 'note'])
+  type?: 'post' | 'note';
 
   @IsNotEmpty()
   @IsString()
@@ -53,6 +63,10 @@ export class QueryArticleDto extends PaginationDto {
   @IsInt()
   @Type(() => Number)
   id: number;
+
+  @IsOptional()
+  @IsIn(['post', 'note'])
+  type?: 'post' | 'note';
 }
 
 export class DeleteArticleDto {

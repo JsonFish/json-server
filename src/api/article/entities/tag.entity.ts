@@ -21,5 +21,5 @@ export class Tag {
   update_time: Date;
 
   @Column({ default: 0 })
-  status: string;
+  status: number;
 }
