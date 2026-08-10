@@ -34,7 +34,7 @@ export class Article {
   @Column({ name: 'is_top' })
   isTop: number;
 
-  @Column()
+  @Column({ name: 'tag_ids' })
   tagIds: string;
 
   @CreateDateColumn({ name: 'create_time', type: 'timestamp' })
