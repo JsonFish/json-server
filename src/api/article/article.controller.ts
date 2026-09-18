@@ -3,12 +3,9 @@ import {
   Get,
   Post,
   Body,
-  Patch,
-  Param,
   Delete,
   Query,
   Put,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { Public } from '@/core/guard/public.decorator';
 import { ArticleService } from './article.service';

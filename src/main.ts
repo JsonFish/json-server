@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
-import * as session from 'express-session';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from '@/core/filter/http-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -14,14 +13,6 @@ async function bootstrap() {
       .map((origin) => origin.trim()),
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
   });
-  app.use(
-    session({
-      secret: 'xiaoyu',
-      name: 'xiaoyu666',
-      rolling: true,
-      cookie: { maxAge: 99999 },
-    }),
-  );
   app.enable('trust proxy');
   app.useGlobalFilters(new HttpExceptionFilter()); // 全局异常过滤器
 

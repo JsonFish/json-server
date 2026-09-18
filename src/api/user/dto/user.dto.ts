@@ -16,21 +16,6 @@ class EmailDto {
   email: string;
 }
 
-export class AddUserDto extends EmailDto {
-  @MaxLength(25)
-  @IsString()
-  @IsNotEmpty()
-  username: string;
-
-  @MaxLength(500)
-  @IsString()
-  @IsNotEmpty()
-  avatar: string;
-
-  @IsString()
-  githubId: string;
-}
-
 export class QueryUserDto extends PaginationDto {
   @IsOptional()
   @MaxLength(45)
