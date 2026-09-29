@@ -1,4 +1,6 @@
+import { requireSecret } from './env';
+
 export default {
-  accessSecretKey: 'accessSecretKey', // 加密accessToken
-  refreshSecretKey: 'refreshSecretKey', // 加密refreshToken
+  accessSecretKey: requireSecret('JWT_ACCESS_SECRET'), // 加密accessToken
+  refreshSecretKey: requireSecret('JWT_REFRESH_SECRET'), // 加密refreshToken
 };

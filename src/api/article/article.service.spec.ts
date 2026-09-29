@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+
 import { ArticleService } from './article.service';
 import { Article } from './entities/article.entity';
 import { Tag } from './entities/tag.entity';
@@ -56,6 +57,7 @@ describe('ArticleService', () => {
     expect(articleRepository.findAndCount).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { type: 'post', status: 1, is_deleted: 0 },
+        order: { isTop: 'DESC', createTime: 'DESC', id: 'DESC' },
       }),
     );
     expect(result.articleList[0]).toMatchObject({

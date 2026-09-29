@@ -8,6 +8,7 @@ import {
   IsIn,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+
 import { PaginationDto } from '@/common/dto/pagination.dto';
 
 export class CreateArticleDto {
@@ -27,6 +28,20 @@ export class CreateArticleDto {
   @IsNotEmpty()
   @IsString()
   description: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  titleEn?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  descriptionEn?: string;
+
+  @IsOptional()
+  @IsString()
+  contentEn?: string;
 
   @IsNotEmpty()
   @IsString()
@@ -74,4 +89,11 @@ export class DeleteArticleDto {
   @IsInt()
   @Type(() => Number)
   id: number;
+}
+
+export class BlogQueryDto extends PaginationDto {
+  /** 内容语言: zh-中文(默认) en-英文 */
+  @IsOptional()
+  @IsIn(['zh', 'en'])
+  lang: 'zh' | 'en' = 'zh';
 }

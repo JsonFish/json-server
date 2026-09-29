@@ -14,6 +14,10 @@ export class Article {
   @Column()
   title: string;
 
+  /** English title for i18n; empty means not translated yet. */
+  @Column({ name: 'title_en', default: '' })
+  titleEn: string;
+
   /** Public, stable identifier used in blog URLs. */
   @Column({ unique: true })
   slug: string;
@@ -23,10 +27,18 @@ export class Article {
   type: 'post' | 'note';
 
   @Column()
-  content: string;
+  description: string;
+
+  /** English description for i18n. */
+  @Column({ name: 'description_en', default: '' })
+  descriptionEn: string;
 
   @Column()
-  description: string;
+  content: string;
+
+  /** English content for i18n; NULL means not translated yet. */
+  @Column({ name: 'content_en', type: 'longtext', nullable: true })
+  contentEn: string | null;
 
   @Column()
   views: number;

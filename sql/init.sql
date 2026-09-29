@@ -65,10 +65,13 @@ CREATE TABLE `article`
 (
     `id`             INT AUTO_INCREMENT PRIMARY KEY COMMENT '文章ID',
     `title`          VARCHAR(200)                     NOT NULL DEFAULT '' COMMENT '标题',
+    `title_en`       VARCHAR(200)                     NOT NULL DEFAULT '' COMMENT '英文标题 (国际化)',
     `slug`           VARCHAR(200)                     NOT NULL COMMENT '前端 URL 标识',
     `type`           ENUM('post', 'note')             NOT NULL DEFAULT 'post' COMMENT '内容类型',
     `description`    VARCHAR(500)                     NOT NULL DEFAULT '' COMMENT '摘要描述',
+    `description_en` VARCHAR(500)                     NOT NULL DEFAULT '' COMMENT '英文摘要 (国际化)',
     `content`        LONGTEXT                         NOT NULL COMMENT '正文内容 (Markdown)',
+    `content_en`     LONGTEXT                         NULL COMMENT '英文正文 (国际化)',
     `tag_ids`        VARCHAR(255)                     NOT NULL DEFAULT '[]' COMMENT '标签ID JSON数组, 如 [1,2,3]',
     -- 作者关联
     `author_id`      VARCHAR(20)                      NOT NULL DEFAULT '' COMMENT '作者用户ID (关联user.id)',
@@ -140,9 +143,12 @@ VALUES ('前端'),
        ('随笔');
 
 -- 供 JsonFi 前台联调使用的公开内容
-INSERT INTO `article` (`title`, `slug`, `type`, `description`, `content`, `tag_ids`, `status`)
+-- 国际化说明: 两篇 post 已填好 _en 字段, 验证 `?lang=en` 返回英文内容;
+--             两篇 note 故意留空 (title_en/description_en = '', content_en = NULL),
+--             验证未翻译时回退到中文。
+INSERT INTO `article` (`title`, `title_en`, `slug`, `type`, `description`, `description_en`, `content`, `content_en`, `tag_ids`, `status`)
 VALUES
-  ('The Art of Minimalism in Web Design', 'minimalism-in-web-design', 'post', 'Exploring how less can be more in modern digital experiences.', '<h2>Why Less is More</h2><p>Minimalism removes distractions and lets content lead the experience.</p>', '1', 1),
-  ('Building with Next.js and Tailwind', 'nextjs-tailwind', 'post', 'A practical look at building a modern, fast blog.', '<h2>Modern frontend tooling</h2><p>Next.js and Tailwind make a productive pair.</p>', '1', 1),
-  ('夏日午后的咖啡馆', 'summer-afternoon-cafe', 'note', '窗外蝉鸣不止，手边的冰美式慢慢化开。这一刻的安静，值得记下来。', '<p>下午三点，阳光从落地窗斜斜地照进来。</p><blockquote>所谓幸福，也许就是此刻的安静。</blockquote>', '5', 1),
-  ('周末爬山记', 'weekend-hiking', 'note', '清晨六点出发，山顶的风吹散了所有的疲惫。', '<p>九点十五分，终于站上了山顶。</p><blockquote>山不在高，有坚持则能登顶。</blockquote>', '5', 1);
+  ('The Art of Minimalism in Web Design', 'The Art of Minimalism in Web Design', 'minimalism-in-web-design', 'post', 'Exploring how less can be more in modern digital experiences.', 'Exploring how less can be more in modern digital experiences.', '## Why Less is More\n\nMinimalism removes distractions and lets content lead the experience.', '## Why Less is More\n\nMinimalism removes distractions and lets content lead the experience.', '1', 1),
+  ('Building with Next.js and Tailwind', 'Building with Next.js and Tailwind', 'nextjs-tailwind', 'post', 'A practical look at building a modern, fast blog.', 'A practical look at building a modern, fast blog.', '## Modern frontend tooling\n\nNext.js and Tailwind make a productive pair.', '## Modern frontend tooling\n\nNext.js and Tailwind make a productive pair.', '1', 1),
+  ('夏日午后的咖啡馆', '', 'summer-afternoon-cafe', 'note', '窗外蝉鸣不止，手边的冰美式慢慢化开。这一刻的安静，值得记下来。', '', '下午三点，阳光从落地窗斜斜地照进来。\n\n> 所谓幸福，也许就是此刻的安静。', NULL, '5', 1),
+  ('周末爬山记', '', 'weekend-hiking', 'note', '清晨六点出发，山顶的风吹散了所有的疲惫。', '', '九点十五分，终于站上了山顶。\n\n> 山不在高，有坚持则能登顶。', NULL, '5', 1);

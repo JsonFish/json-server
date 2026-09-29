@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, In } from 'typeorm';
+
 import {
   CreateArticleDto,
   QueryArticleDto,
@@ -25,18 +26,22 @@ export class ArticleService {
 
   async findAll(query: QueryArticleDto) {
     const { page, pageSize, status, title, id, type } = query;
+
     if (id) {
       const article = await this.articleRepository.findOne({
         where: { id, is_deleted: 0 },
       });
       let tags: any = [];
+
       if (article?.tagIds) {
         tags = await this.tagRepository.findBy({
           id: In(article.tagIds.split(',')),
         });
       }
+
       return article ? { ...article, tags } : null;
     }
+
     let [articleList, total] = await this.articleRepository.findAndCount({
       where: {
         title: title ? Like(`%${title}%`) : undefined,
@@ -51,11 +56,13 @@ export class ArticleService {
     articleList = await Promise.all(
       articleList.map(async (i) => {
         let tags: any;
+
         if (i.tagIds) {
           tags = await this.tagRepository.findBy({
             id: In(i.tagIds.split(',')),
           });
         }
+
         return { ...i, tags };
       }),
     );
@@ -74,6 +81,7 @@ export class ArticleService {
       slug,
       type: createArticleDto.type ?? 'post',
     });
+
     return await this.articleRepository.save(article);
   }
 
@@ -82,14 +90,17 @@ export class ArticleService {
     const article = await this.articleRepository.findOne({
       where: { id, is_deleted: 0 },
     });
+
     if (!article) {
       throw new BadRequestException('文章不存在');
     }
+
     const tagIds = updateArticleDto.tagIds.join(',');
     const slug = updateArticleDto.slug
       ? await this.createSlug(updateArticleDto.slug, article.id)
       : article.slug;
     Object.assign(article, { ...updateArticleDto, tagIds, slug });
+
     return await this.articleRepository.save(article);
   }
 
@@ -97,51 +108,86 @@ export class ArticleService {
     const article = await this.articleRepository.findOne({
       where: { id, is_deleted: 0 },
     });
+
     if (!article) {
       throw new BadRequestException('文章不存在');
     }
+
     const status = article.status === 1 ? 0 : 1;
     await this.articleRepository.update(id, { status });
+
     return;
   }
 
   async remove(id: number) {
     const result = await this.articleRepository.update(id, { is_deleted: 1 });
+
     if (result.affected === 0) {
       throw new BadRequestException('删除失败');
     }
+
     return;
   }
 
-  async findPublished(type: 'post' | 'note', page: number, pageSize: number) {
+  async findPublished(
+    type: 'post' | 'note',
+    page: number,
+    pageSize: number,
+    lang: 'zh' | 'en' = 'zh',
+  ) {
     const [articleList, total] = await this.articleRepository.findAndCount({
       where: { type, status: 1, is_deleted: 0 },
-      order: { isTop: 'DESC', createTime: 'DESC' },
+      order: { isTop: 'DESC', createTime: 'DESC', id: 'DESC' },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
 
     return {
-      articleList: await this.withTags(articleList),
+      articleList: await this.withTags(
+        articleList.map((article) => this.localize(article, lang)),
+      ),
       total,
       page,
       pageSize,
     };
   }
 
-  async findPublishedBySlug(type: 'post' | 'note', slug: string) {
+  async findPublishedBySlug(
+    type: 'post' | 'note',
+    slug: string,
+    lang: 'zh' | 'en' = 'zh',
+  ) {
     const article = await this.articleRepository.findOne({
       where: { type, slug, status: 1, is_deleted: 0 },
     });
+
     if (!article) {
       throw new NotFoundException('文章不存在');
     }
 
     await this.articleRepository.increment({ id: article.id }, 'views', 1);
-    const [result] = await this.withTags([
+
+    const localized = this.localize(
       { ...article, views: article.views + 1 },
-    ]);
+      lang,
+    );
+    const [result] = await this.withTags([localized]);
+
     return result;
+  }
+
+  /** 英文请求时用 _en 字段覆盖展示字段，未翻译的内容回退到中文。 */
+  private localize(article: Article, lang: 'zh' | 'en'): Article {
+    if (lang !== 'en') {
+      return article;
+    }
+
+    return {
+      ...article,
+      title: article.titleEn || article.title,
+      description: article.descriptionEn || article.description,
+      content: article.contentEn || article.content,
+    };
   }
 
   private async withTags(articleList: Article[]) {
@@ -154,6 +200,7 @@ export class ArticleService {
         const tags = ids.length
           ? await this.tagRepository.findBy({ id: In(ids) })
           : [];
+
         return { ...article, tags };
       }),
     );
@@ -169,9 +216,11 @@ export class ArticleService {
     const existing = await this.articleRepository.findOne({
       where: { slug: base },
     });
+
     if (existing && existing.id !== currentId) {
       throw new ConflictException('文章链接已存在');
     }
+
     return base;
   }
 }
