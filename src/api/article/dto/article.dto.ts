@@ -66,13 +66,16 @@ export class UpdateArticleDto extends CreateArticleDto {
   id: number;
 }
 export class QueryArticleDto extends PaginationDto {
+  @IsOptional()
   @IsInt()
   @Type(() => Number)
-  status: number = 0;
+  @IsIn([0, 1, 2])
+  status?: number;
 
-  @MaxLength(45)
+  @IsOptional()
+  @MaxLength(200)
   @IsString()
-  title: string = '';
+  title?: string;
 
   @IsOptional()
   @IsInt()

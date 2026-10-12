@@ -49,6 +49,7 @@ export class ArticleService {
         type,
         is_deleted: 0,
       },
+      order: { isTop: 'DESC', createTime: 'DESC', id: 'DESC' },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });

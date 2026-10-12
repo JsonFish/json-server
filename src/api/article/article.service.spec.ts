@@ -15,6 +15,8 @@ describe('ArticleService', () => {
   const tagRepository = { findBy: jest.fn() };
 
   beforeEach(async () => {
+    jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ArticleService,
@@ -63,6 +65,69 @@ describe('ArticleService', () => {
     expect(result.articleList[0]).toMatchObject({
       title: 'A post',
       tags: [{ id: 1, tagName: '前端' }],
+    });
+  });
+
+  it('returns the English title, description and content when lang is en', async () => {
+    articleRepository.findAndCount.mockResolvedValueOnce([
+      [
+        {
+          id: 2,
+          type: 'post',
+          title: '中文标题',
+          titleEn: 'English title',
+          description: '中文摘要',
+          descriptionEn: 'English description',
+          content: '中文正文',
+          contentEn: 'English content',
+          tagIds: '',
+          status: 1,
+          is_deleted: 0,
+        },
+      ],
+      1,
+    ]);
+
+    const result = await service.findPublished('post', 1, 20, 'en');
+
+    expect(result.articleList[0]).toMatchObject({
+      title: 'English title',
+      description: 'English description',
+      content: 'English content',
+      titleEn: 'English title',
+      descriptionEn: 'English description',
+      contentEn: 'English content',
+    });
+  });
+
+  it('returns the English fields for an English article detail request', async () => {
+    articleRepository.findOne.mockResolvedValueOnce({
+      id: 3,
+      type: 'note',
+      slug: 'english-note',
+      title: '中文标题',
+      titleEn: 'English title',
+      description: '中文摘要',
+      descriptionEn: 'English description',
+      content: '中文正文',
+      contentEn: 'English content',
+      views: 0,
+      tagIds: '',
+      status: 1,
+      is_deleted: 0,
+    });
+    articleRepository.increment.mockResolvedValueOnce(undefined);
+
+    const result = await service.findPublishedBySlug(
+      'note',
+      'english-note',
+      'en',
+    );
+
+    expect(result).toMatchObject({
+      title: 'English title',
+      description: 'English description',
+      content: 'English content',
     });
   });
 
