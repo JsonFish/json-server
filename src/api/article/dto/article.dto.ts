@@ -49,14 +49,17 @@ export class CreateArticleDto {
 
   @IsNotEmpty()
   @IsArray()
+  @IsInt({ each: true })
   tagIds: number[];
 
   @IsOptional()
   @IsInt()
+  @IsIn([0, 1])
   isTop: number;
 
   @IsNotEmpty()
   @IsInt()
+  @IsIn([0, 1, 2])
   status: number;
 }
 
@@ -65,6 +68,18 @@ export class UpdateArticleDto extends CreateArticleDto {
   @IsInt()
   id: number;
 }
+
+/** PUT /article/:id 的请求体；文章 ID 从 URL 获取。 */
+export class UpdateArticleByIdDto extends CreateArticleDto {}
+
+export class UpdateArticleStatusDto {
+  @IsNotEmpty()
+  @IsInt()
+  @Type(() => Number)
+  @IsIn([0, 1, 2])
+  status: number;
+}
+
 export class QueryArticleDto extends PaginationDto {
   @IsOptional()
   @IsInt()

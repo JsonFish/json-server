@@ -50,6 +50,31 @@ All four endpoints are public and return the standard `{ code, data, message }`
 response. Set `CORS_ORIGIN` if the frontend is not served from
 `http://localhost:3000`.
 
+### Article management API
+
+The admin article resource uses the standard `{ code, data, message }` response.
+For the current demo, article-management and tag endpoints are public: no login
+or role check is performed, so the admin demo account can manage articles.
+Public blog reads remain under `/blog/*`. This configuration is not suitable
+for production; restore server-side authentication and authorization before
+deploying publicly.
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| `GET` | `/article?page=1&pageSize=10&title=&type=post&status=1` | Filter and paginate articles; omit `status` to include all statuses. |
+| `GET` | `/article/tags` | List available article tags. |
+| `GET` | `/article/:id` | Read one article, including tags. |
+| `POST` | `/article` | Create an article. |
+| `PUT` | `/article/:id` | Replace an article's editable fields. |
+| `PUT` | `/article/:id/status` | Set status to `0` (draft), `1` (published), or `2` (offline). |
+| `DELETE` | `/article/:id` | Soft-delete an article. |
+
+Create and update JSON bodies use `title`, `description`, `content`, `tagIds`
+(integer array), and `status`; `slug`, `type` (`post` or `note`), `titleEn`,
+`descriptionEn`, `contentEn`, and `isTop` are optional. The pre-existing
+`PUT /article/status`, `PUT /article` and `DELETE /article` routes remain
+available for clients that send the article ID in the request body.
+
 ## Compile and run the project
 
 ```bash

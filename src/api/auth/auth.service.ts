@@ -95,6 +95,7 @@ export class AuthService {
           return {
             avatar,
             username: result[0].username,
+            role,
             accessToken,
             refreshToken,
           };
@@ -118,6 +119,7 @@ export class AuthService {
           return {
             avatar: githubUserInfo.avatar,
             username: githubUserInfo.username,
+            role: 0,
             accessToken,
             refreshToken,
           };

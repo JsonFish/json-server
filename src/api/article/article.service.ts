@@ -1,6 +1,5 @@
 import {
   Injectable,
-  BadRequestException,
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
@@ -28,18 +27,7 @@ export class ArticleService {
     const { page, pageSize, status, title, id, type } = query;
 
     if (id) {
-      const article = await this.articleRepository.findOne({
-        where: { id, is_deleted: 0 },
-      });
-      let tags: any = [];
-
-      if (article?.tagIds) {
-        tags = await this.tagRepository.findBy({
-          id: In(article.tagIds.split(',')),
-        });
-      }
-
-      return article ? { ...article, tags } : null;
+      return this.findOne(id);
     }
 
     let [articleList, total] = await this.articleRepository.findAndCount({
@@ -71,6 +59,24 @@ export class ArticleService {
     return { articleList, total };
   }
 
+  async findOne(id: number) {
+    const article = await this.articleRepository.findOne({
+      where: { id, is_deleted: 0 },
+    });
+    if (!article) {
+      throw new NotFoundException('文章不存在');
+    }
+    const [result] = await this.withTags([article]);
+    return result;
+  }
+
+  async findTags() {
+    return this.tagRepository.find({
+      where: { status: 0 },
+      order: { tagName: 'ASC' },
+    });
+  }
+
   async create(createArticleDto: CreateArticleDto) {
     const tagIds = createArticleDto.tagIds.join(',');
     const slug = await this.createSlug(
@@ -92,9 +98,7 @@ export class ArticleService {
       where: { id, is_deleted: 0 },
     });
 
-    if (!article) {
-      throw new BadRequestException('文章不存在');
-    }
+    if (!article) throw new NotFoundException('文章不存在');
 
     const tagIds = updateArticleDto.tagIds.join(',');
     const slug = updateArticleDto.slug
@@ -110,24 +114,36 @@ export class ArticleService {
       where: { id, is_deleted: 0 },
     });
 
-    if (!article) {
-      throw new BadRequestException('文章不存在');
-    }
+    if (!article) throw new NotFoundException('文章不存在');
 
     const status = article.status === 1 ? 0 : 1;
     await this.articleRepository.update(id, { status });
 
-    return;
+    return { id, status };
+  }
+
+  async setStatus(id: number, status: number) {
+    const result = await this.articleRepository.update(
+      { id, is_deleted: 0 },
+      { status },
+    );
+    if (result.affected === 0) {
+      throw new NotFoundException('文章不存在');
+    }
+    return { id, status };
   }
 
   async remove(id: number) {
-    const result = await this.articleRepository.update(id, { is_deleted: 1 });
+    const result = await this.articleRepository.update(
+      { id, is_deleted: 0 },
+      { is_deleted: 1 },
+    );
 
     if (result.affected === 0) {
-      throw new BadRequestException('删除失败');
+      throw new NotFoundException('文章不存在');
     }
 
-    return;
+    return { id, deleted: true };
   }
 
   async findPublished(
