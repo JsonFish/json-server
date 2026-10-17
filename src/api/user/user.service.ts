@@ -1,6 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
+
 import { User } from './entities/user.entity';
 import { QueryUserDto, UpdateUserDto } from './dto/user.dto';
 
@@ -13,6 +14,7 @@ export class UserService {
 
   async findAll(query: { email?: string; id?: string; githubId?: string }) {
     const { email, id, githubId } = query;
+
     return await this.usersRepository.find({
       where: { email, id, githubId },
     });
@@ -28,22 +30,27 @@ export class UserService {
       take: pageSize,
       order: { create_time: 'ASC' },
     });
+
     return { userList, total };
   }
 
   async addUserByGithub(userInfo: Partial<User>) {
     await this.usersRepository.save(userInfo);
+
     return;
   }
 
   async updateUser(body: UpdateUserDto) {
     const { id } = body;
     const user = await this.usersRepository.findOne({ where: { id } });
+
     if (!user) {
       throw new BadRequestException('用户不存在');
     }
+
     Object.assign(user, { ...body, id });
     await this.usersRepository.save(user);
+
     return;
   }
 
@@ -52,14 +59,17 @@ export class UserService {
    */
   async updateLoginInfo(id: string, ip: string, ipAddress: string) {
     const user = await this.usersRepository.findOne({ where: { id } });
+
     if (!user) {
       throw new BadRequestException('用户不存在');
     }
+
     user.lastLoginTime = new Date();
     user.lastLoginIp = ip;
     user.lastLoginAddress = ipAddress;
     user.loginCount = (user.loginCount || 0) + 1;
     await this.usersRepository.save(user);
+
     return;
   }
 }

@@ -63,10 +63,13 @@ export class ArticleService {
     const article = await this.articleRepository.findOne({
       where: { id, is_deleted: 0 },
     });
+
     if (!article) {
       throw new NotFoundException('文章不存在');
     }
+
     const [result] = await this.withTags([article]);
+
     return result;
   }
 
@@ -127,9 +130,11 @@ export class ArticleService {
       { id, is_deleted: 0 },
       { status },
     );
+
     if (result.affected === 0) {
       throw new NotFoundException('文章不存在');
     }
+
     return { id, status };
   }
 
