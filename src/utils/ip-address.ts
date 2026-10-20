@@ -16,9 +16,12 @@ async function getIpAddress(ip: string | undefined): Promise<IpData> {
       city: '-',
     };
   }
+
   ip = ip?.replace(/^.*:/, '');
+
   const response = await axios.get(`http://ip-api.com/json/${ip}?lang=zh-CN`);
   const success = response.data.status === 'success';
+
   return {
     ip,
     country: success ? response.data.country : '-',

@@ -3,15 +3,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import * as nanoid from 'nanoid';
 import * as bcrypt from 'bcrypt';
+
 import { User } from './entities/user.entity';
-import userConfig from '@/config/user.config';
-import getIpAddress from '@/utils/ip-address';
 import {
   QueryUserDto,
   UpdateUserDto,
   AddUserDto,
   ShieldUserDto,
 } from './dto/user.dto';
+
+import userConfig from '@/config/user.config';
+import getIpAddress from '@/utils/ip-address';
 @Injectable()
 export class UserService {
   constructor(
@@ -21,6 +23,7 @@ export class UserService {
 
   async findAll(query: { email?: string; id?: string; githubId?: string }) {
     const { email, id, githubId } = query;
+
     return await this.usersRepository.find({
       where: { email, id, githubId },
     });
@@ -37,6 +40,7 @@ export class UserService {
       order: { create_time: 'ASC' },
     });
     const usersWithoutPassword = userList.map(({ password, ...rest }) => rest);
+
     return { userList: usersWithoutPassword, total };
   }
 
@@ -59,33 +63,41 @@ export class UserService {
       ip_address,
     };
     await this.usersRepository.save(userInfoData);
+
     return userInfoData;
   }
 
   async addUserByGithub(userInfo: any) {
     await this.usersRepository.save(userInfo);
+
     return;
   }
 
   async updateUser(body: UpdateUserDto) {
     const { id } = body;
     const user = await this.usersRepository.findOne({ where: { id } });
+
     if (!user) {
       throw new BadRequestException('用户不存在');
     }
+
     Object.assign(user, { ...body, id: +id });
     await this.usersRepository.save(user);
+
     return;
   }
 
   async shieldUser(body: ShieldUserDto) {
     const { id } = body;
     const user = await this.usersRepository.findOne({ where: { id } });
+
     if (!user) {
       throw new BadRequestException('用户不存在');
     }
+
     user.status = user.status === 1 ? 0 : 1;
     await this.usersRepository.save(user);
+
     return;
   }
 }

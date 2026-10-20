@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { ChatMessage } from './entities/chat.entity';
 import { CreateChatMessageDto } from './dto/chat.dto';
 
@@ -14,6 +15,7 @@ export class ChatService {
   // 保存消息
   async saveMessage(chatMessage: CreateChatMessageDto) {
     await this.chatMesssageRepository.save(chatMessage);
+
     return chatMessage;
   }
 
@@ -24,6 +26,7 @@ export class ChatService {
         where: { status: 0 },
       },
     );
+
     return messageList;
   }
 }

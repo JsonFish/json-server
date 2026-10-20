@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository, Like } from 'typeorm';
+
 import { Link } from './entities/link.entity';
 import {
   QueryLinkDto,
@@ -29,6 +30,7 @@ export class LinkService {
     });
     const formatList = linkList.map((item) => {
       const { userInfo, ...rest } = item;
+
       return {
         ...rest,
         email: userInfo.email,
@@ -36,18 +38,23 @@ export class LinkService {
         username: userInfo.username,
       };
     });
+
     return { linkList: formatList, total };
   }
 
   async applyFor(linkData: CreateLinkDto, userId: number) {
     if (!userId) throw new BadRequestException('登录后才能申请哦');
+
     const link = await this.linkRepository.findOne({
       where: { user_id: userId, is_deleted: 0 },
     });
+
     if (link) {
       throw new BadRequestException('你已申请，请勿重复申请');
     }
+
     await this.linkRepository.save({ ...linkData, user_id: userId });
+
     return;
   }
 
@@ -56,10 +63,13 @@ export class LinkService {
     const link = await this.linkRepository.findOne({
       where: { id, is_deleted: 0 },
     });
+
     if (!link) {
       throw new BadRequestException('该友链不存在');
     }
+
     await this.linkRepository.update(id, { status: 1 });
+
     return;
   }
 
@@ -70,10 +80,13 @@ export class LinkService {
 
   async remove(id: number[]): Promise<void> {
     const existLinks = await this.linkRepository.findBy({ id: In(id) });
+
     if (existLinks.length !== id.length) {
       throw new BadRequestException('删除失败');
     }
+
     await this.linkRepository.delete(id);
+
     return;
   }
 }

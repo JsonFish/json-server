@@ -1,12 +1,14 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like, In } from 'typeorm';
+
 import {
   CreateArticleDto,
   QueryArticleDto,
   UpdateArticleDto,
 } from './dto/article.dto';
 import { Article } from './entities/article.entity';
+
 import { Tag } from '@/api/tag/entities/tag.entity';
 
 @Injectable()
@@ -20,18 +22,22 @@ export class ArticleService {
 
   async findAll(query: QueryArticleDto) {
     const { page, pageSize, status, title, id } = query;
+
     if (id) {
       const article = await this.articleRepository.findOne({
         where: { id, is_deleted: 0 },
       });
       let tags: any = [];
+
       if (article?.tagIds) {
         tags = await this.tagRepository.findBy({
           id: In(article.tagIds.split(',')),
         });
       }
+
       return { ...article, tags };
     }
+
     let [articleList, total] = await this.articleRepository.findAndCount({
       where: {
         title: title ? Like(`%${title}%`) : undefined,
@@ -45,11 +51,13 @@ export class ArticleService {
     articleList = await Promise.all(
       articleList.map(async (i) => {
         let tags: any;
+
         if (i.tagIds) {
           tags = await this.tagRepository.findBy({
             id: In(i.tagIds.split(',')),
           });
         }
+
         return { ...i, tags };
       }),
     );
@@ -64,6 +72,7 @@ export class ArticleService {
       tagIds,
     });
     await this.articleRepository.save(article);
+
     return;
   }
 
@@ -72,12 +81,15 @@ export class ArticleService {
     const article = await this.articleRepository.findOne({
       where: { id, is_deleted: 0 },
     });
+
     if (!article) {
       throw new BadRequestException('文章不存在');
     }
+
     const tagIds = updateArticleDto.tagIds.join(',');
     Object.assign(article, { ...updateArticleDto, tagIds });
     await this.articleRepository.save(article);
+
     return;
   }
 
@@ -85,19 +97,24 @@ export class ArticleService {
     const article = await this.articleRepository.findOne({
       where: { id, is_deleted: 0 },
     });
+
     if (!article) {
       throw new BadRequestException('文章不存在');
     }
+
     const status = article.status === 1 ? 0 : 1;
     await this.articleRepository.update(id, { status });
+
     return;
   }
 
   async remove(id: number) {
     const result = await this.articleRepository.update(id, { is_deleted: 1 });
+
     if (result.affected === 0) {
       throw new BadRequestException('删除失败');
     }
+
     return;
   }
 }

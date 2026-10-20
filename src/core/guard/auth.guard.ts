@@ -7,7 +7,9 @@ import {
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+
 import { IS_PUBLIC_KEY } from './public.decorator';
+
 import secretKey from '@/config/jwt.config';
 
 @Injectable()
@@ -22,16 +24,20 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
+
     if (isPublic) {
       return true;
     }
+
     const request: Request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
+
     if (!token) {
       throw new UnauthorizedException();
     }
 
     const isRefresh = request.url == '/auth/refresh';
+
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: isRefresh
@@ -42,11 +48,13 @@ export class AuthGuard implements CanActivate {
     } catch {
       throw new UnauthorizedException();
     }
+
     return true;
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {
     const [type, token] = request.headers.authorization?.split(' ') ?? [];
+
     return type === 'Bearer' ? token : undefined;
   }
 }

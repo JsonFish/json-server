@@ -1,5 +1,4 @@
-import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
-import typescriptEslintParser from '@typescript-eslint/parser';
+import typescriptEslint from 'typescript-eslint';
 import importPlugin from 'eslint-plugin-import';
 import prettier from 'eslint-plugin-prettier';
 import { resolve } from 'path';
@@ -13,18 +12,18 @@ export default [
     languageOptions: {
       ecmaVersion: 2020,
       sourceType: 'module',
-      parser: typescriptEslintParser,
+      parser: typescriptEslint.parser,
       parserOptions: {
         project: resolve('./tsconfig.json'),
       },
     },
     plugins: {
-      '@typescript-eslint': typescriptEslintPlugin,
+      '@typescript-eslint': typescriptEslint.plugin,
       import: importPlugin,
       prettier,
     },
     rules: {
-      ...typescriptEslintPlugin.configs.recommended.rules,
+      ...typescriptEslint.configs.recommended.rules,
       ...prettier.configs.recommended.rules,
       'prettier/prettier': [
         'error',

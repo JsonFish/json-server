@@ -3,6 +3,7 @@ import type { IResult } from 'ua-parser-js';
 
 function getAgentData(userAgent: string): IResult {
   const parser = new UAParser(userAgent);
+
   return parser.getResult();
 }
 

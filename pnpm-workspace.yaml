@@ -1,0 +1,7 @@
+ignoredBuiltDependencies:
+  - '@scarf/scarf'
+  - '@swc/core'
+  - bcrypt
+
+onlyBuiltDependencies:
+  - '@nestjs/core'

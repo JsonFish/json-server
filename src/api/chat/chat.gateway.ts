@@ -8,7 +8,9 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+
 import { ChatService } from './chat.service';
+
 import getIpAddress from '@/utils/ip-address';
 import { CreateChatMessageDto } from '@/api/chat/dto/chat.dto';
 
@@ -43,9 +45,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     const { username, message, avatar } = data;
+
     if (!username || !message || !avatar) {
       return;
     }
+
     const { ip } = await getIpAddress(client.handshake.address);
     const chatMessage = await this.chatService.saveMessage({
       username,
@@ -56,6 +60,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     // 广播消息给所有连接的客户端
     this.server.emit('receiveMessage', chatMessage);
+
     return chatMessage;
   }
 

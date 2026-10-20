@@ -8,9 +8,11 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { Public } from '@/core/guard/public.decorator';
+
 import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto, EmailDto } from './dto/auth.dto';
+
+import { Public } from '@/core/guard/public.decorator';
 
 export interface AuthorizedRequest extends Request {
   user: {
@@ -36,6 +38,7 @@ export class AuthController {
     if (loginDto.code !== session.captchaCode) {
       throw new BadRequestException('验证码错误');
     }
+
     return this.authService.login(loginDto);
   }
 
@@ -54,6 +57,7 @@ export class AuthController {
   @Post('email')
   email(@Body() EmailDto: EmailDto) {
     const email = EmailDto.email;
+
     return this.authService.sendEmail(email);
   }
 

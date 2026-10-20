@@ -1,5 +1,7 @@
 import { Controller, Get, Body, Put, Param, Delete } from '@nestjs/common';
+
 import { InfoService } from './info.service';
+
 import { Public } from '@/core/guard/public.decorator';
 
 @Controller('info')

@@ -1,10 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { AppModule } from './app.module';
 import * as session from 'express-session';
 import { ValidationPipe } from '@nestjs/common';
-import { HttpExceptionFilter } from '@/core/filter/http-exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
+import { AppModule } from './app.module';
+
+import { HttpExceptionFilter } from '@/core/filter/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -26,6 +28,7 @@ async function bootstrap() {
       stopAtFirstError: true, // 在第一个错误时停止验证
     }),
   );
+
   const config = new DocumentBuilder()
     .setTitle('接口文档')
     .setDescription('Json 博客接口文档')
@@ -42,4 +45,5 @@ async function bootstrap() {
     console.log(`Server is running on port ${process.env.PORT ?? 3001}`);
   });
 }
+
 void bootstrap();

@@ -10,7 +10,7 @@ import {
   Put,
   ParseIntPipe,
 } from '@nestjs/common';
-import { Public } from '@/core/guard/public.decorator';
+
 import { ArticleService } from './article.service';
 import {
   CreateArticleDto,
@@ -18,6 +18,8 @@ import {
   QueryArticleDto,
   DeleteArticleDto,
 } from './dto/article.dto';
+
+import { Public } from '@/core/guard/public.decorator';
 
 @Controller('article')
 export class ArticleController {

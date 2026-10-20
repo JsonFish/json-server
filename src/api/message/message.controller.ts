@@ -9,8 +9,10 @@ import {
   Req,
 } from '@nestjs/common';
 import { Request } from 'express';
+
 import { MessageService } from './message.service';
 import { QueryMessageDto, createMessageDto } from './dto/message.dto';
+
 import getAgentData from '@/utils/user-agent';
 import { Public } from '@/core/guard/public.decorator';
 import getIpAddress from '@/utils/ip-address';
@@ -42,6 +44,7 @@ export class MessageController {
     const requestIp = request.ip;
     const ipData = await getIpAddress(requestIp);
     const { id } = request.user;
+
     return this.messageService.create(createMessageDto, agentData, ipData, +id);
   }
 

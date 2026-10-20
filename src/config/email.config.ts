@@ -1,4 +1,5 @@
 import type { SendMailOptions } from 'nodemailer';
+
 const emailConfig = {
   host: 'smtp.qq.com',
   port: 465,
