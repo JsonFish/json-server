@@ -19,7 +19,7 @@ import getIpAddress from '@/utils/ip-address';
 
 @Injectable()
 export class AuthService {
-  private transporter: Transporter;
+  private transporter: Transporter | undefined;
   constructor(
     @InjectRepository(EmailCode)
     private readonly EmailCodeRepository: Repository<EmailCode>,
